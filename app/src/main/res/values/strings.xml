@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">CallBoard</string>
+    <!-- выдвигающееся меню Drawer main -->
+    <string name="ad_cat1">Объявления</string>
+    <string name="ad_my_ads">Мои объявления</string>
+    <string name="ad_car">Автомобили</string>
+    <string name="ad_pc">Компьютеры</string>
+    <string name="ad_smartphone">Смартфоны</string>
+    <string name="ad_dm">Бытовая техника</string>
+
+    <string name="ad_cat2">Аккаунт</string>
+    <string name="ac_sign_up">Регистрация</string> <!-- регистрация -->
+    <string name="ac_sign_in">Вход</string> <!-- вход -->
+    <string name="ac_sign_out">Выход</string> <!-- выход -->
+
+</resources>
