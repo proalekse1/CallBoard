@@ -28,7 +28,7 @@
                 />
         </menu>
     </item>
-
+    <!-- название категории -->
     <item android:title="@string/ad_cat2">
         <menu>
             <item
