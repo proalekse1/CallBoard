@@ -13,4 +13,7 @@
     <string name="ac_sign_in">Вход</string> <!-- вход -->
     <string name="ac_sign_out">Выход</string> <!-- выход -->
 
+    <string name="open">Open</string> <!-- выход -->
+    <string name="close">Close</string> <!-- выход -->
+
 </resources>
