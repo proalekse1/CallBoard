@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.navigation.NavigationView.OnNavigationItemSelectedListener
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.main_content.*
 
@@ -55,10 +54,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.id_sign_out ->{
 
             }
-            R.id.id_my_ads ->{
-
-            }
-
         }
         drawerLayout.closeDrawer(GravityCompat.START) //закрыть меню после нажатия на кнопку
         return true //нужно для when
