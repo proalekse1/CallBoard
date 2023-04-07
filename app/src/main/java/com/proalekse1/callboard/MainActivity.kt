@@ -7,22 +7,26 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.main_content.*
+import com.proalekse1.callboard.databinding.ActivityMainBinding
+
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    private lateinit var rootElement:ActivityMainBinding //подключаем байндинг
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        rootElement = ActivityMainBinding.inflate(layoutInflater) //надули байндинг
+        val view = rootElement.root //подключаем байндинг
+        setContentView(view) //подключаем байндинг
         init()
     }
 
     private fun init(){
 
-        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close) //кнопка в тулбаре открытия меню
-        drawerLayout.addDrawerListener(toggle)
+        val toggle = ActionBarDrawerToggle(this, rootElement.drawerLayout, rootElement.mainContent.toolbar, R.string.open, R.string.close) //кнопка в тулбаре открытия меню
+        rootElement.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
-        navView.setNavigationItemSelectedListener (this) //подключаем к навигатион вью слушатель нажатий
+        rootElement.navView.setNavigationItemSelectedListener (this) //подключаем к навигатион вью слушатель нажатий
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean { //слушатель для кнопок меню
@@ -55,7 +59,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
         }
-        drawerLayout.closeDrawer(GravityCompat.START) //закрыть меню после нажатия на кнопку
+        rootElement.drawerLayout.closeDrawer(GravityCompat.START) //закрыть меню после нажатия на кнопку
         return true //нужно для when
     }
 }
