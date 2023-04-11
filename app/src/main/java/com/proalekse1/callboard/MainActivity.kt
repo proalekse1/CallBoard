@@ -3,17 +3,20 @@ package com.proalekse1.callboard
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.proalekse1.callboard.databinding.ActivityMainBinding
 import com.proalekse1.callboard.dialoghelper.DialogConst
 import com.proalekse1.callboard.dialoghelper.DialogHelper
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    private lateinit var tvAccount: TextView //для доступа к хидеру
     private lateinit var rootElement:ActivityMainBinding //подключаем байндинг
     private var dialogHelper = DialogHelper(this)
     val mAuth = FirebaseAuth.getInstance() //инициализировали Firebase
@@ -32,6 +35,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         rootElement.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
         rootElement.navView.setNavigationItemSelectedListener (this) //подключаем к навигатион вью слушатель нажатий
+        tvAccount = rootElement.navView.getHeaderView(0).findViewById(R.id.tvAccountEmail) //получаем доступ к хидеру
+    }
+
+    override fun onStart() {
+        super.onStart()
+        uiUpdate(mAuth.currentUser)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean { //слушатель для кнопок меню
@@ -62,10 +71,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 dialogHelper.createSignDialog(DialogConst.SIGN_IN_STATE)
             }
             R.id.id_sign_out ->{
-
+                uiUpdate(null) //если нажали выход то будет null
+                mAuth.signOut() //функция выхода из аккаунта
             }
         }
         rootElement.drawerLayout.closeDrawer(GravityCompat.START) //закрыть меню после нажатия на кнопку
         return true //нужно для when
     }
+
+    fun uiUpdate(user:FirebaseUser?){ //показываем в хидере пользователя который вошел
+        tvAccount.text = if(user == null){
+            resources.getString(R.string.not_reg) //если поьзователя нет то показать это в хидере
+        } else {
+            user.email
+        }
+    }
+
 }

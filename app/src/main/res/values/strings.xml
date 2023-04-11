@@ -15,6 +15,8 @@
 
     <string name="open">Open</string> <!-- открыть -->
     <string name="close">Close</string> <!-- закрыть -->
+    <string name="not_reg">Войдите или зарегистрируйтесь!</string> <!-- закрыть -->
+
     <!-- Sign Dialog -->
     <string name="email_hint">Email</string> <!-- хинт -->
     <string name="password_hint">Password</string> <!-- хинт -->
@@ -22,6 +24,7 @@
     <string name="sign_in_action">Войти</string> <!-- Войти -->
     <string name="forget_password">Забыли пароль?</string> <!-- Войти -->
     <string name="sign_up_error">Неудалось зарегистрироваться</string> <!-- Ошибка регистрация -->
+    <string name="sign_in_error">Неудалось войти</string> <!-- Ошибка входа -->
     <string name="send_verification_error">Неудалось отправить Email для подтверждения</string> <!-- Ошибка отправки почты -->
     <string name="send_verification_done">На вашу почту была отправлена ссылка для подтверждения вашего аккаунта, пожалуйста подтвердите ваш аккаунт!</string> <!-- Ошибка отправки почты -->
 

@@ -15,6 +15,8 @@ class DialogHelper(act:MainActivity) { //диалог для регистрац�
         val builder = AlertDialog.Builder(act) //инициализировали билдер
         val rootDialogElement = SignDialogBinding.inflate(act.layoutInflater) //подключили байндинг к разметке и надули
         val view = rootDialogElement.root
+        builder.setView(view)//передаем разметку в билдер
+
         if(index == DialogConst.SIGN_UP_STATE){ //проверяем что нажали вход или регистрация
             rootDialogElement.tvSignTitle.text = act.resources.getString(R.string.ac_sign_up) //показываем текст через байндинг в диалоге
             rootDialogElement.btSignUpIn.text = act.resources.getString(R.string.sign_up_action)
@@ -22,17 +24,22 @@ class DialogHelper(act:MainActivity) { //диалог для регистрац�
             rootDialogElement.tvSignTitle.text = act.resources.getString(R.string.ac_sign_in)
             rootDialogElement.btSignUpIn.text = act.resources.getString(R.string.sign_in_action)
         }
-
+        val dialog = builder.create() //создали диалог
         rootDialogElement.btSignUpIn.setOnClickListener{//слушатель нажатий
+            dialog.dismiss() //закрыть диалог
             if(index == DialogConst.SIGN_UP_STATE){
+
                 accHelper.signUpWithEmail(rootDialogElement.edSignEmail.text.toString(), //запускаем функцию регистрации
                     rootDialogElement.edSignPassword.text.toString())
-            } else {
 
+            } else {
+                accHelper.signInWithEmail(rootDialogElement.edSignEmail.text.toString(), //запускаем функцию входа
+                    rootDialogElement.edSignPassword.text.toString())
             }
 
         }
-        builder.setView(view)//передаем разметку в билдер
-        builder.show() //рисуем диалог на экране
+
+        dialog.show() //рисуем диалог на экране
+
     }
 }
