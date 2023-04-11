@@ -13,7 +13,17 @@
     <string name="ac_sign_in">Вход</string> <!-- вход -->
     <string name="ac_sign_out">Выход</string> <!-- выход -->
 
-    <string name="open">Open</string> <!-- выход -->
-    <string name="close">Close</string> <!-- выход -->
+    <string name="open">Open</string> <!-- открыть -->
+    <string name="close">Close</string> <!-- закрыть -->
+    <!-- Sign Dialog -->
+    <string name="email_hint">Email</string> <!-- хинт -->
+    <string name="password_hint">Password</string> <!-- хинт -->
+    <string name="sign_up_action">Зарегистрироваться</string> <!-- Зарегистрироваться -->
+    <string name="sign_in_action">Войти</string> <!-- Войти -->
+    <string name="forget_password">Забыли пароль?</string> <!-- Войти -->
+    <string name="sign_up_error">Неудалось зарегистрироваться</string> <!-- Ошибка регистрация -->
+    <string name="send_verification_error">Неудалось отправить Email для подтверждения</string> <!-- Ошибка отправки почты -->
+    <string name="send_verification_done">На вашу почту была отправлена ссылка для подтверждения вашего аккаунта, пожалуйста подтвердите ваш аккаунт!</string> <!-- Ошибка отправки почты -->
+
 
 </resources>

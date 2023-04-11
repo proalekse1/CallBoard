@@ -7,11 +7,16 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.proalekse1.callboard.databinding.ActivityMainBinding
+import com.proalekse1.callboard.dialoghelper.DialogConst
+import com.proalekse1.callboard.dialoghelper.DialogHelper
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var rootElement:ActivityMainBinding //подключаем байндинг
+    private var dialogHelper = DialogHelper(this)
+    val mAuth = FirebaseAuth.getInstance() //инициализировали Firebase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,10 +55,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             }
             R.id.id_sign_up ->{
-
+                //если в меню нажали регистрация то передаем в диалог индекс для регистрациии показывае диалог регистрации
+                dialogHelper.createSignDialog(DialogConst.SIGN_UP_STATE)
             }
             R.id.id_sign_in ->{
-
+                dialogHelper.createSignDialog(DialogConst.SIGN_IN_STATE)
             }
             R.id.id_sign_out ->{
 
