@@ -19,6 +19,8 @@
 
     <!-- Sign Dialog -->
     <string name="email_hint">Email</string> <!-- хинт -->
+    <string name="email_reset_password_was_sent">Ссылка для восстановления отправлена на почту!</string> <!-- для восстановления пароля -->
+    <string name="dialog_reset_email_message">Для восстановления пароля укажите ваш Email адрес!</string> <!-- для восстановления пароля -->
     <string name="password_hint">Password</string> <!-- хинт -->
     <string name="sign_up_action">Зарегистрироваться</string> <!-- Зарегистрироваться -->
     <string name="sign_in_action">Войти</string> <!-- Войти -->
