@@ -104,6 +104,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun uiUpdate(user:FirebaseUser?){ //показываем в хидере пользователя который вошел
+
         tvAccount.text = if(user == null){
             resources.getString(R.string.not_reg) //если поьзователя нет то показать это в хидере
         } else {
