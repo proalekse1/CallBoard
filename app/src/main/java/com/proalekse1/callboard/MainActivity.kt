@@ -1,18 +1,23 @@
 package com.proalekse1.callboard
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.api.ApiException
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.proalekse1.callboard.databinding.ActivityMainBinding
 import com.proalekse1.callboard.dialoghelper.DialogConst
 import com.proalekse1.callboard.dialoghelper.DialogHelper
+import com.proalekse1.callboard.dialoghelper.GoogleAccConst
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -27,6 +32,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val view = rootElement.root //подключаем байндинг
         setContentView(view) //подключаем байндинг
         init()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) { //для входа в гугл аккаунт
+        if(requestCode == GoogleAccConst.GOOGLE_SIGN_IN_REQUEST_CODE){
+           // Log.d("MyLog", "Sign in result")
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data) //получить аккаунт
+            try{ //пытаемся взять аккаунт и если он выйдет получим ответ почему через catch
+
+                val account = task.getResult(ApiException::class.java) //пытаемся получить и следим за ошибками с помощью ApiException
+                if (account != null){
+                    Log.d("MyLog", "Api 0") //ловим ошибку 12500
+                    dialogHelper.accHelper.signInFirebaseWithGoogle(account.idToken!!) //получаем доступ к токену, !! знаем что не налл
+                }
+
+            }catch (e:ApiException){
+                Log.d("MyLog", "Api error : ${e.message}")
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun init(){

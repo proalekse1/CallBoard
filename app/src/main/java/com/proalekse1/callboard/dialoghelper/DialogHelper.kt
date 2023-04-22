@@ -11,7 +11,7 @@ import com.proalekse1.callboard.databinding.SignDialogBinding
 
 class DialogHelper(act:MainActivity) { //диалог для регистрации и входа
     private val act = act //act это контекст
-    private val accHelper = AccountHelper(act) //инициализируем функцию регистрации
+    val accHelper = AccountHelper(act) //инициализируем функцию регистрации
 
     fun createSignDialog(index:Int){ //создаем диалог
         val builder = AlertDialog.Builder(act) //инициализировали билдер
@@ -28,12 +28,15 @@ class DialogHelper(act:MainActivity) { //диалог для регистрац�
         rootDialogElement.btForgetP.setOnClickListener{//слушатель нажатий
             setOnClickResetPassword(rootDialogElement, dialog) //слушатель нажатий в диалоге
         }
+        rootDialogElement.btGoogleSignIn.setOnClickListener{//слушатель нажатий для кнопки Гугл
+            accHelper.signInWithGoogle()
+        }
 
         dialog.show() //рисуем диалог на экране
 
     }
 
-    private fun setOnClickResetPassword(rootDialogElement: SignDialogBinding, dialog: AlertDialog?) {
+    private fun setOnClickResetPassword(rootDialogElement: SignDialogBinding, dialog: AlertDialog?) { //функция восстановления пароля
 
         if(rootDialogElement.edSignEmail.text.isNotEmpty()){ //если поле email не пустое
             act.mAuth.sendPasswordResetEmail(rootDialogElement.edSignEmail.text.toString()).addOnCompleteListener{task->//отправка ссылки для восстановления пароля
