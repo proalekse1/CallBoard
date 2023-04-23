@@ -29,6 +29,8 @@
     <string name="sign_in_error">Неудалось войти</string> <!-- Ошибка входа -->
     <string name="send_verification_error">Неудалось отправить Email для подтверждения</string> <!-- Ошибка отправки почты -->
     <string name="send_verification_done">На вашу почту была отправлена ссылка для подтверждения вашего аккаунта, пожалуйста подтвердите ваш аккаунт!</string> <!-- Ошибка отправки почты -->
-
+    <!-- Toast -->
+    <string name="link_done">Email успешно подключен к Google аккаунту</string>
+    <string name="enter_to_G">У вас уже есть аккаунт с такой почтой, войдите в Гугл аккаунт, а после зарегистрируйтесь по почте, и они свяжутся.</string>
 
 </resources>

@@ -30,8 +30,9 @@ class AccountHelper(act: MainActivity) { //класс для регистрац�
                             val exception = task.exception as FirebaseAuthUserCollisionException //Делаем каст превращая таск в эту ошибку
                             // Log.d("MyLog", "Exception : ${exception.errorCode}") //получаем код ошибки в логкат
                             if (exception.errorCode == FirebaseAuthConstans.ERROR_EMAIL_ALREADY_IN_USE) { //если аккаунт уже сущствует
-                                Toast.makeText(act, FirebaseAuthConstans.ERROR_EMAIL_ALREADY_IN_USE, Toast.LENGTH_LONG).show()
-                                //то связываем аккаунты почты и гугл аккаунта
+                                // Toast.makeText(act, FirebaseAuthConstans.ERROR_EMAIL_ALREADY_IN_USE, Toast.LENGTH_LONG).show()
+                                // связываем аккаунты почты и гугл аккаунта 10 урок
+                                linkEmailToG(email, password) //связываем аккаунты
                             }
 
                         } else if (task.exception is FirebaseAuthInvalidCredentialsException) { //ловим ошибку если неверно ввели почту поставили пробел или собаку
@@ -53,6 +54,20 @@ class AccountHelper(act: MainActivity) { //класс для регистрац�
 
                     }
                 }
+        }
+    }
+
+    private fun linkEmailToG(email: String, password: String){ //для объединения аккаунтов получаем почту и пароль
+        val credential = EmailAuthProvider.getCredential(email,password) //получили данные
+        if (act.mAuth.currentUser != null){ //если пользоваель не нал то сязываем
+        act.mAuth.currentUser?.linkWithCredential(credential)?.addOnCompleteListener { task ->  //объединили аккаунты и проверили все ли удалось
+            if (task.isSuccessful) {
+                Toast.makeText(act, act.resources.getString(R.string.link_done), Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
+        } else {
+            Toast.makeText(act, act.resources.getString(R.string.enter_to_G), Toast.LENGTH_LONG).show()
         }
     }
 
