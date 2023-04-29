@@ -30,6 +30,7 @@ class DialogHelper(act:MainActivity) { //диалог для регистрац�
         }
         rootDialogElement.btGoogleSignIn.setOnClickListener{//слушатель нажатий для кнопки Гугл
             accHelper.signInWithGoogle()
+            dialog.dismiss() //чтоб диалог закрывался
         }
 
         dialog.show() //рисуем диалог на экране

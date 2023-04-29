@@ -83,6 +83,10 @@ class AccountHelper(act: MainActivity) { //класс для регистрац�
         act.startActivityForResult(intent, GoogleAccConst.GOOGLE_SIGN_IN_REQUEST_CODE)
     }
 
+    fun signOutG(){ //для выхода из гугл аккаунта
+        getSignInClient().signOut()
+    }
+
     fun signInFirebaseWithGoogle(token:String){ //для регистрации с гугл аккаунт на Firebase
         val credential = GoogleAuthProvider.getCredential(token, null) //получить учетные данные по токену
         act.mAuth.signInWithCredential(credential).addOnCompleteListener{task-> // регистрируемся
@@ -102,14 +106,21 @@ class AccountHelper(act: MainActivity) { //класс для регистрац�
                     //если успешно зарегистрировались запустится условие отправить письмо с подтверждением
                     act.uiUpdate(task.result?.user) //показывает аккаунт в хидере
                 } else{
-                    // Log.d("MyLog", "Exception : ${task.exception}") //получаем класс ошибки в логкат
+                    Log.d("MyLog", "Exception : ${task.exception}") //получаем класс ошибки в логкат
                     if (task.exception is FirebaseAuthInvalidCredentialsException) { //ловим ошибку если неверно ввели почту поставили пробел или собаку
+
                         val exception = task.exception as FirebaseAuthInvalidCredentialsException //Делаем каст превращая таск в эту ошибку
-                        // Log.d("MyLog", "Exception : ${exception.errorCode}") //получаем код ошибки в логкат
+                         Log.d("MyLog", "Exception : ${exception.errorCode}") //получаем код ошибки в логкат
                         if (exception.errorCode == FirebaseAuthConstans.ERROR_INVALID_EMAIL) { //если неверно ввели акккаунт
                             Toast.makeText(act, FirebaseAuthConstans.ERROR_INVALID_EMAIL, Toast.LENGTH_LONG).show()
                         } else if (exception.errorCode == FirebaseAuthConstans.ERROR_WRONG_PASSWORD) { //если аккаунт уже сущствует
                             Toast.makeText(act, FirebaseAuthConstans.ERROR_WRONG_PASSWORD, Toast.LENGTH_LONG).show()
+                        }
+                    } else if(task.exception is FirebaseAuthInvalidUserException) { //если такого юзера не сущесвует
+                        val exception = task.exception as FirebaseAuthInvalidUserException //Делаем каст превращая таск в эту ошибку
+                        Log.d("MyLog", "Exception : ${exception.errorCode}") //получаем класс ошибки в логкат
+                        if (exception.errorCode == FirebaseAuthConstans.ERROR_INVALID_EMAIL) { //если неверно ввели акккаунт
+                            Toast.makeText(act, FirebaseAuthConstans.ERROR_INVALID_EMAIL, Toast.LENGTH_LONG).show()
                         }
                     }
                 }

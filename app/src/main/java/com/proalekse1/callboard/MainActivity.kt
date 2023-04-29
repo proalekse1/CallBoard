@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
@@ -14,6 +15,7 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.proalekse1.callboard.act.EditAdsAct
 import com.proalekse1.callboard.databinding.ActivityMainBinding
 import com.proalekse1.callboard.dialoghelper.DialogConst
 import com.proalekse1.callboard.dialoghelper.DialogHelper
@@ -32,6 +34,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val view = rootElement.root //подключаем байндинг
         setContentView(view) //подключаем байндинг
         init()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean { //слушатель кнопки new
+        if(item.itemId == R.id.id_new_ads){ //если нажали на new
+            val i = Intent(this, EditAdsAct::class.java) //запускаем активити
+            startActivity(i)
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) { //для входа в гугл аккаунт
@@ -54,7 +69,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun init(){
-
+        setSupportActionBar(rootElement.mainContent.toolbar) //подключаем наш тулбар
         val toggle = ActionBarDrawerToggle(this, rootElement.drawerLayout, rootElement.mainContent.toolbar, R.string.open, R.string.close) //кнопка в тулбаре открытия меню
         rootElement.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
@@ -94,9 +109,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.id_sign_in ->{
                 dialogHelper.createSignDialog(DialogConst.SIGN_IN_STATE)
             }
-            R.id.id_sign_out ->{
+            R.id.id_sign_out ->{ //кнопка выхода
                 uiUpdate(null) //если нажали выход то будет null
                 mAuth.signOut() //функция выхода из аккаунта
+                dialogHelper.accHelper.signOutG() //функция выхода для гугл аккаунта
             }
         }
         rootElement.drawerLayout.closeDrawer(GravityCompat.START) //закрыть меню после нажатия на кнопку
