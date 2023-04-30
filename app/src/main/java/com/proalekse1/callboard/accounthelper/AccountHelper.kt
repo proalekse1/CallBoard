@@ -119,8 +119,8 @@ class AccountHelper(act: MainActivity) { //класс для регистрац�
                     } else if(task.exception is FirebaseAuthInvalidUserException) { //если такого юзера не сущесвует
                         val exception = task.exception as FirebaseAuthInvalidUserException //Делаем каст превращая таск в эту ошибку
                         Log.d("MyLog", "Exception : ${exception.errorCode}") //получаем класс ошибки в логкат
-                        if (exception.errorCode == FirebaseAuthConstans.ERROR_INVALID_EMAIL) { //если неверно ввели акккаунт
-                            Toast.makeText(act, FirebaseAuthConstans.ERROR_INVALID_EMAIL, Toast.LENGTH_LONG).show()
+                        if (exception.errorCode == FirebaseAuthConstans.ERROR_USER_NOT_FOUND) { //если неверно ввели акккаунт
+                            Toast.makeText(act, FirebaseAuthConstans.ERROR_USER_NOT_FOUND, Toast.LENGTH_LONG).show()
                         }
                     }
                 }
