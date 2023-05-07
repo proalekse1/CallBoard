@@ -13,19 +13,20 @@ class DialogSpinnerHelper { //диалог для поиска стран и г�
 
     fun showSpinnerDialog(context: Context, list:ArrayList<String>){
         val builder = AlertDialog.Builder(context)
+        val dialog = builder.create() //создали диалог
         val rootView = LayoutInflater.from(context).inflate(R.layout.spinner_layout, null) //подключаем инфлейтер через контекст надуваем разметку
-        val adapter = RcViewDialogSpinner() //передаем адаптер
+        val adapter = RcViewDialogSpinnerAdapter(context, dialog) //передаем адаптер и диалог
         val rcView = rootView.findViewById<RecyclerView>(R.id.rcSpView) //нашли ресайклер вью на разметке
         val sv = rootView.findViewById<SearchView>(R.id.svSpinner) //нашли серч вью на разметке
         rcView.layoutManager = LinearLayoutManager(context)
         rcView.adapter = adapter //подключили к ресайклер вью адаптер
-        builder.setView(rootView)
+        dialog.setView(rootView)
         adapter.updateAdapter(list) //передаем список городов
         setSearchView(adapter, list, sv) //обновляем диалог хелпер после поиска и показыаем одну страну
-        builder.show() //диалог нарисует разметку
+        dialog.show() //диалог нарисует разметку
     }
 
-    private fun setSearchView(adapter: RcViewDialogSpinner, list: ArrayList<String>, sv: SearchView?) { //обновляем диалог хелпер после поиска и показыаем одну страну
+    private fun setSearchView(adapter: RcViewDialogSpinnerAdapter, list: ArrayList<String>, sv: SearchView?) { //обновляем диалог хелпер после поиска и показыаем одну страну
         sv?.setOnQueryTextListener(object : SearchView.OnQueryTextListener{ //слушатель изменения текста
             override fun onQueryTextSubmit(p0: String?): Boolean {
                return false
