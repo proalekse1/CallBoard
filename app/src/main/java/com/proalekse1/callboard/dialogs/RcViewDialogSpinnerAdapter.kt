@@ -10,12 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.proalekse1.callboard.R
 import com.proalekse1.callboard.act.EditAdsAct
 
-class RcViewDialogSpinnerAdapter(var context: Context, var dialog:AlertDialog): RecyclerView.Adapter<RcViewDialogSpinnerAdapter.SpViewHolder>() { //для списка стран
+class RcViewDialogSpinnerAdapter(var tvSelection: TextView, var dialog:AlertDialog, ): RecyclerView.Adapter<RcViewDialogSpinnerAdapter.SpViewHolder>() { //для списка стран
     private val mainList = ArrayList<String>() //создаем массив стран в этом классе
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpViewHolder { //рисуем разметку одного элемента
         val view = LayoutInflater.from(parent.context).inflate(R.layout.sp_list_item, parent, false) //надули разметку одного элемента
-        return SpViewHolder(view, context, dialog)
+        return SpViewHolder(view, tvSelection, dialog)
     }
 
     override fun onBindViewHolder(holder: SpViewHolder, position: Int) { //пишем текст в элементе холдера
@@ -26,7 +26,7 @@ class RcViewDialogSpinnerAdapter(var context: Context, var dialog:AlertDialog): 
       return mainList.size
     }
 
-    class SpViewHolder(itemView: View, var context: Context, var dialog: AlertDialog) : RecyclerView.ViewHolder(itemView), View.OnClickListener { //создаем вью холдер чтобы найти текст вью
+    class SpViewHolder(itemView: View, var tvSelection: TextView, var dialog: AlertDialog) : RecyclerView.ViewHolder(itemView), View.OnClickListener { //создаем вью холдер чтобы найти текст вью
         private var itemText = ""
         fun setData(text : String){
             val tvSpItem = itemView.findViewById<TextView>(R.id.tvSpItem) //ищем текст вью
@@ -36,7 +36,8 @@ class RcViewDialogSpinnerAdapter(var context: Context, var dialog:AlertDialog): 
         }
 
         override fun onClick(v: View?) { //слушатель нажатий списка стран
-            (context as EditAdsAct).rootElement.tvCountry.text = itemText //делаем каст и говорим что контекст это активити EditAdsAct
+            // в 14 уроке (context as EditAdsAct).rootElement.tvCountry.text = itemText //делаем каст и говорим что контекст это активити EditAdsAct
+            tvSelection.text = itemText
             dialog.dismiss() //закрываем диалог
         }
     }

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import com.proalekse1.callboard.R
 import com.proalekse1.callboard.databinding.ActivityEditAdsBinding
 import com.proalekse1.callboard.dialogs.DialogSpinnerHelper
@@ -25,9 +26,22 @@ class EditAdsAct : AppCompatActivity() { //активити для новых о
     }
 
     //OnClicks
-    fun onClickSelectCountry(view: View){ //слушатель нажатий для текст вью
+    fun onClickSelectCountry(view: View){ //слушатель нажатий для текст вью со странами
         val listCountry = CityHelper.getAllCountries(this) //получаем список стран
-        dialog.showSpinnerDialog(this, listCountry) //запускаем диалог
+        dialog.showSpinnerDialog(this, listCountry, rootElement.tvCountry) //когда жмем тв контри, передаем тв контри
+        if (rootElement.tvCity.text.toString() != getString(R.string.select_city)){ //если город уже выбран
+            rootElement.tvCity.text = getString(R.string.select_city) //очистить город в текст вью
+        }
+    }
+
+    fun onClickSelectCity(view: View){ //слушатель нажатий для текст вью с городами
+        val selectedCountry = rootElement.tvCountry.text.toString() //получаем выбранную в текст вью страну
+        if (selectedCountry != getString(R.string.select_country)) {//если еще не выбрана страна то запускаем этот код
+            val listCity = CityHelper.getAllCities(selectedCountry, this) //получаем список городов
+            dialog.showSpinnerDialog(this, listCity, rootElement.tvCity) //запускаем диалог
+        } else {
+            Toast.makeText(this, "No country selected", Toast.LENGTH_LONG).show()
+        }
     }
 
 }

@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.widget.SearchView
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.proalekse1.callboard.R
@@ -11,11 +12,11 @@ import com.proalekse1.callboard.utils.CityHelper
 
 class DialogSpinnerHelper { //диалог для поиска стран и городов
 
-    fun showSpinnerDialog(context: Context, list:ArrayList<String>){
+    fun showSpinnerDialog(context: Context, list:ArrayList<String>, tvSelection:TextView){
         val builder = AlertDialog.Builder(context)
         val dialog = builder.create() //создали диалог
         val rootView = LayoutInflater.from(context).inflate(R.layout.spinner_layout, null) //подключаем инфлейтер через контекст надуваем разметку
-        val adapter = RcViewDialogSpinnerAdapter(context, dialog) //передаем адаптер и диалог
+        val adapter = RcViewDialogSpinnerAdapter(tvSelection, dialog) //передаем адаптер и диалог
         val rcView = rootView.findViewById<RecyclerView>(R.id.rcSpView) //нашли ресайклер вью на разметке
         val sv = rootView.findViewById<SearchView>(R.id.svSpinner) //нашли серч вью на разметке
         rcView.layoutManager = LinearLayoutManager(context)
