@@ -1,5 +1,3 @@
-package com.proalekse1.callboard.dialoghelper
-
 import android.app.AlertDialog
 import android.view.View
 import android.widget.Toast
@@ -7,9 +5,10 @@ import com.proalekse1.callboard.MainActivity
 import com.proalekse1.callboard.R
 import com.proalekse1.callboard.accounthelper.AccountHelper
 import com.proalekse1.callboard.databinding.SignDialogBinding
+import com.proalekse1.callboard.dialoghelper.DialogConst
 
 
-class DialogHelper(act:MainActivity) { //диалог для регистрации и входа
+class DialogHelper(act: MainActivity) { //диалог для регистрации и входа
     private val act = act //act это контекст
     val accHelper = AccountHelper(act) //инициализируем функцию регистрации
 

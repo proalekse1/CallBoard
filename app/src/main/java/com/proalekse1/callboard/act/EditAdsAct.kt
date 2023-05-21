@@ -1,24 +1,67 @@
 package com.proalekse1.callboard.act
 
-import androidx.appcompat.app.AppCompatActivity
+
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.fxn.pix.Pix
+import com.fxn.utility.PermUtil
+
 import com.proalekse1.callboard.R
 import com.proalekse1.callboard.databinding.ActivityEditAdsBinding
 import com.proalekse1.callboard.dialogs.DialogSpinnerHelper
 import com.proalekse1.callboard.utils.CityHelper
+import com.proalekse1.callboard.utils.ImagePicker
+
 
 class EditAdsAct : AppCompatActivity() { //активити для новых объявлений
     lateinit var rootElement:ActivityEditAdsBinding //для байндинга
     private val dialog = DialogSpinnerHelper() //инициализируем диалог
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         rootElement = ActivityEditAdsBinding.inflate(layoutInflater) //для байндинга
         setContentView(rootElement.root) //для байндинга
         init()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) { //получаем результат когда добавляем фото на объявление
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK && requestCode == ImagePicker.REQUES_CODE_GET_IMAGES) {
+            if(data != null){
+                val returnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
+                Log.d("MyLog", "Image :${returnValue?.get(0)}") //проверка работы функции
+                Log.d("MyLog", "Image :${returnValue?.get(1)}") //проверка работы функции
+                Log.d("MyLog", "Image :${returnValue?.get(2)}") //проверка работы функции
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult( //функцию запроса на доступ к фото на телефоне и к камере
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when (requestCode) {
+            PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) { //если разрешение получено
+                    ImagePicker.getImages(this) //получаем фото
+                } else {
+
+                        Toast.makeText(
+                        this,
+                        "Approve permissions to open Pix ImagePicker",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                return
+            }
+        }
     }
 
     private fun init(){
@@ -42,6 +85,10 @@ class EditAdsAct : AppCompatActivity() { //активити для новых о
         } else {
             Toast.makeText(this, "No country selected", Toast.LENGTH_LONG).show()
         }
+    }
+
+    fun onClickGetImages(view: View){ //слушатель нажатий для кнопки добавить картинку
+        ImagePicker.getImages(this)
     }
 
 }
