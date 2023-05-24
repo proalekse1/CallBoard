@@ -10,15 +10,16 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.fxn.pix.Pix
 import com.fxn.utility.PermUtil
-
 import com.proalekse1.callboard.R
 import com.proalekse1.callboard.databinding.ActivityEditAdsBinding
 import com.proalekse1.callboard.dialogs.DialogSpinnerHelper
+import com.proalekse1.callboard.frag.FragmentCloseInterface
+import com.proalekse1.callboard.frag.ImageListFrag
 import com.proalekse1.callboard.utils.CityHelper
 import com.proalekse1.callboard.utils.ImagePicker
 
 
-class EditAdsAct : AppCompatActivity() { //активити для новых объявлений
+class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активити для новых объявлений
     lateinit var rootElement:ActivityEditAdsBinding //для байндинга
     private val dialog = DialogSpinnerHelper() //инициализируем диалог
 
@@ -50,7 +51,7 @@ class EditAdsAct : AppCompatActivity() { //активити для новых о
         when (requestCode) {
             PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) { //если разрешение получено
-                    ImagePicker.getImages(this) //получаем фото
+                    ImagePicker.getImages(this, 3) //получаем фото
                 } else {
 
                         Toast.makeText(
@@ -88,7 +89,15 @@ class EditAdsAct : AppCompatActivity() { //активити для новых о
     }
 
     fun onClickGetImages(view: View){ //слушатель нажатий для кнопки добавить картинку
-        ImagePicker.getImages(this)
+        rootElement.scroolViewMain.visibility = View.GONE //скрываем вью
+        val fm = supportFragmentManager.beginTransaction()
+        fm.replace(R.id.place_holder, ImageListFrag(this)) //заменяем холдер на фрагмент
+        fm.commit()
+       // ImagePicker.getImages(this)
+    }
+
+    override fun onFragClose() { //метод интерфейса
+        rootElement.scroolViewMain.visibility = View.VISIBLE //покажем вью
     }
 
 }
