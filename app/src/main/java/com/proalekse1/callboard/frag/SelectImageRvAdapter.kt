@@ -8,9 +8,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.proalekse1.callboard.R
+import com.proalekse1.callboard.utils.ItemTouchMoveCallback
 
-class SelectImageRvAdapter : RecyclerView.Adapter<SelectImageRvAdapter.ImageHolder>() { //для показа картинок во фрагменте
-   private val mainArray = ArrayList<SelectImageItem>() //массив для адаптера который хранит дата класс
+class SelectImageRvAdapter : RecyclerView.Adapter<SelectImageRvAdapter.ImageHolder>(), ItemTouchMoveCallback.ItemTouchAdapter { //для показа картинок во фрагменте
+    val mainArray = ArrayList<SelectImageItem>() //массив для адаптера который хранит дата класс
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder { //создаем элемент
         val view = LayoutInflater.from(parent.context).inflate(R.layout.select_image_frag_item, parent, false)
         return ImageHolder(view)
@@ -22,6 +23,13 @@ class SelectImageRvAdapter : RecyclerView.Adapter<SelectImageRvAdapter.ImageHold
 
     override fun getItemCount(): Int {
       return  mainArray.size
+    }
+
+    override fun onMove(startPos: Int, targetPos: Int) { //метод интерфейса функции перемешиания
+        val targetItem = mainArray[targetPos] //сохраняем элемент над которым занесли захваченную картинку, чтобы когда захваченная картинка ляжет на него первый не исчез
+        mainArray[targetPos] = mainArray[startPos] //меняем местами картинки
+        mainArray[startPos] = targetItem //старый сохраненный элемент кидаем на начальную позицию
+        notifyItemMoved(startPos, targetPos) //говорим адаптеру о изменениях
     }
 
     class ImageHolder(itemView: View) : RecyclerView.ViewHolder(itemView) { //холдер заполняет
@@ -39,4 +47,5 @@ class SelectImageRvAdapter : RecyclerView.Adapter<SelectImageRvAdapter.ImageHold
         mainArray.addAll(newList) //заполняем
         notifyDataSetChanged() //сообщаем что данные изменились
     }
+
 }
