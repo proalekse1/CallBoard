@@ -35,10 +35,17 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && requestCode == ImagePicker.REQUES_CODE_GET_IMAGES) {
             if(data != null){
-                val returnValue = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
-                Log.d("MyLog", "Image :${returnValue?.get(0)}") //проверка работы функции
-                Log.d("MyLog", "Image :${returnValue?.get(1)}") //проверка работы функции
-                Log.d("MyLog", "Image :${returnValue?.get(2)}") //проверка работы функции
+                val returnValues = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
+                if(returnValues?.size!! > 1) {
+                    rootElement.scroolViewMain.visibility = View.GONE //скрываем вью
+                    val fm = supportFragmentManager.beginTransaction()
+                    fm.replace(
+                        R.id.place_holder,
+                        ImageListFrag(this, returnValues)
+                    ) //заменяем холдер на фрагмент
+                    fm.commit()
+                    // ImagePicker.getImages(this)
+                }
             }
         }
     }
@@ -89,11 +96,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
     }
 
     fun onClickGetImages(view: View){ //слушатель нажатий для кнопки добавить картинку
-        rootElement.scroolViewMain.visibility = View.GONE //скрываем вью
-        val fm = supportFragmentManager.beginTransaction()
-        fm.replace(R.id.place_holder, ImageListFrag(this)) //заменяем холдер на фрагмент
-        fm.commit()
-       // ImagePicker.getImages(this)
+        ImagePicker.getImages(this, 3) //получаем фото
     }
 
     override fun onFragClose() { //метод интерфейса
