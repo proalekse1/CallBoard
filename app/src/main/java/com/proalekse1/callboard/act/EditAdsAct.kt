@@ -11,10 +11,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.fxn.pix.Pix
 import com.fxn.utility.PermUtil
 import com.proalekse1.callboard.R
+import com.proalekse1.callboard.adapters.ImageAdapter
 import com.proalekse1.callboard.databinding.ActivityEditAdsBinding
 import com.proalekse1.callboard.dialogs.DialogSpinnerHelper
 import com.proalekse1.callboard.frag.FragmentCloseInterface
 import com.proalekse1.callboard.frag.ImageListFrag
+import com.proalekse1.callboard.frag.SelectImageItem
 import com.proalekse1.callboard.utils.CityHelper
 import com.proalekse1.callboard.utils.ImagePicker
 
@@ -22,6 +24,7 @@ import com.proalekse1.callboard.utils.ImagePicker
 class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активити для новых объявлений
     lateinit var rootElement:ActivityEditAdsBinding //для байндинга
     private val dialog = DialogSpinnerHelper() //инициализируем диалог
+    private lateinit var imageAdapter : ImageAdapter //подключаем адаптер
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +76,8 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
     }
 
     private fun init(){
-
+        imageAdapter = ImageAdapter() //инициализирууем адаптер
+        rootElement.vpImages.adapter = imageAdapter //находим вью пейджер и подключаем адаптер
     }
 
     //OnClicks
@@ -99,8 +103,9 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
         ImagePicker.getImages(this, 3) //получаем фото
     }
 
-    override fun onFragClose() { //метод интерфейса
+    override fun onFragClose(list : ArrayList<SelectImageItem>) { //метод интерфейса
         rootElement.scroolViewMain.visibility = View.VISIBLE //покажем вью
+        imageAdapter.update(list) //обновляем список
     }
 
 }

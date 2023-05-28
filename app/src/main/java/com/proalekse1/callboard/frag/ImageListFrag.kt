@@ -40,7 +40,7 @@ class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, pri
 
     override fun onDetach() { //фрагмент отсоединяеся от активити
         super.onDetach()
-        fragCloseInterface.onFragClose() //запускается метод на активити
+        fragCloseInterface.onFragClose(adapter.mainArray) //запускается метод на активити
         Log.d("MyLog", "Title 0 : ${adapter.mainArray[0].title}") //проверка перемешивания картинок
         Log.d("MyLog", "Title 1 : ${adapter.mainArray[1].title}")
         Log.d("MyLog", "Title 2 : ${adapter.mainArray[2].title}")

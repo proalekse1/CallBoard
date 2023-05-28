@@ -25,11 +25,13 @@ class ItemTouchMoveCallback(val adapter : ItemTouchAdapter) : ItemTouchHelper.Ca
 
     override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) { //очищает картинку от прозрачности когда отпускаем
         viewHolder.itemView.alpha = 1.0f
+        adapter.onClear()
         super.clearView(recyclerView, viewHolder)
     }
 
     interface ItemTouchAdapter{ //интерфейс для ресайклер вью адаптера
         fun onMove(startPos : Int, targetPos : Int) //в параметрах начальная и целеая позиция
+        fun onClear()
     }
 
 }

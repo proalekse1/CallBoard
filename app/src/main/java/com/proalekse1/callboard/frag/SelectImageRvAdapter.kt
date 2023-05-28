@@ -28,8 +28,16 @@ class SelectImageRvAdapter : RecyclerView.Adapter<SelectImageRvAdapter.ImageHold
     override fun onMove(startPos: Int, targetPos: Int) { //метод интерфейса функции перемешиания
         val targetItem = mainArray[targetPos] //сохраняем элемент над которым занесли захваченную картинку, чтобы когда захваченная картинка ляжет на него первый не исчез
         mainArray[targetPos] = mainArray[startPos] //меняем местами картинки
+        val titleStart = mainArray[targetPos].title //Теперь заголовок зажатой позиции стерт ее надо сохранить и отдать.
+        mainArray[targetPos].title = targetItem.title //перезаписываем заголовок для стартовой позиции заголовок целевой который был
         mainArray[startPos] = targetItem //старый сохраненный элемент кидаем на начальную позицию
+        mainArray[startPos].title = titleStart //передали старый зголовок
         notifyItemMoved(startPos, targetPos) //говорим адаптеру о изменениях
+
+    }
+
+    override fun onClear() {
+        notifyDataSetChanged()
     }
 
     class ImageHolder(itemView: View) : RecyclerView.ViewHolder(itemView) { //холдер заполняет
