@@ -1,13 +1,13 @@
 package com.proalekse1.callboard.utils
 
 
-
 import androidx.appcompat.app.AppCompatActivity
 import com.fxn.pix.Options
 import com.fxn.pix.Pix
 
 
 object ImagePicker { // в этом классе будем получать картинки
+    const val MAX_IMAGE_COUNT = 3 //максимальное количество картинок
     const val REQUES_CODE_GET_IMAGES = 999
     fun getImages(context: AppCompatActivity, imageCounter : Int){
         val options = Options.init()

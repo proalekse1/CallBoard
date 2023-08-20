@@ -22,6 +22,7 @@ import com.proalekse1.callboard.utils.ImagePicker
 
 
 class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активити для новых объявлений
+    private var chooseImageFrag : ImageListFrag? = null //для отслеживания выбрали уже картинку во фрагменте или нет
     lateinit var rootElement:ActivityEditAdsBinding //для байндинга
     private val dialog = DialogSpinnerHelper() //инициализируем диалог
     private lateinit var imageAdapter : ImageAdapter //подключаем адаптер
@@ -38,22 +39,27 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && requestCode == ImagePicker.REQUES_CODE_GET_IMAGES) {
             if(data != null){
+
                 val returnValues = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
-                if(returnValues?.size!! > 1) {
+                if(returnValues?.size!! > 1 && chooseImageFrag == null ) { //если нет фрагмента создаем его
+                    chooseImageFrag = ImageListFrag(this, returnValues)
                     rootElement.scroolViewMain.visibility = View.GONE //скрываем вью
                     val fm = supportFragmentManager.beginTransaction()
                     fm.replace(
-                        R.id.place_holder,
-                        ImageListFrag(this, returnValues)
-                    ) //заменяем холдер на фрагмент
+                        R.id.place_holder, chooseImageFrag!!) //заменяем холдер на фрагмент
                     fm.commit()
                     // ImagePicker.getImages(this)
+
+                } else if (chooseImageFrag != null){ //если фрагмент уже создан не надо его еще создавать
+
+                    chooseImageFrag?.updateAdapter(returnValues)
+
                 }
             }
         }
     }
 
-    override fun onRequestPermissionsResult( //функцию запроса на доступ к фото на телефоне и к камере
+    override fun  onRequestPermissionsResult( //функцию запроса на доступ к фото на телефоне и к камере
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
@@ -106,6 +112,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
     override fun onFragClose(list : ArrayList<SelectImageItem>) { //метод интерфейса
         rootElement.scroolViewMain.visibility = View.VISIBLE //покажем вью
         imageAdapter.update(list) //обновляем список
+        chooseImageFrag = null
     }
 
 }

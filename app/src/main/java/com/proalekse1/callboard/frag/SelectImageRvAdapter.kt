@@ -50,8 +50,8 @@ class SelectImageRvAdapter : RecyclerView.Adapter<SelectImageRvAdapter.ImageHold
             image.setImageURI(Uri.parse(item.imageUri)) //превращаем парсингом стринг в юрл
         }
     }
-    fun updateAdapter(newList : List<SelectImageItem>){
-        mainArray.clear() //очищаем
+    fun updateAdapter(newList : List<SelectImageItem>, needClear : Boolean){
+        if(needClear) mainArray.clear() //очищаем список с картинками если надо
         mainArray.addAll(newList) //заполняем
         notifyDataSetChanged() //сообщаем что данные изменились
     }
