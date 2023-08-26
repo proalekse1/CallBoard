@@ -7,10 +7,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.proalekse1.callboard.R
-import com.proalekse1.callboard.frag.SelectImageItem
 
 class ImageAdapter : RecyclerView.Adapter<ImageAdapter.ImageHolder>() {
-    val mainArray = ArrayList<SelectImageItem>() //массив для картинок
+    val mainArray = ArrayList<String>() //массив для картинок
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.image_adapter_item, parent, false)
@@ -18,7 +17,7 @@ class ImageAdapter : RecyclerView.Adapter<ImageAdapter.ImageHolder>() {
     }
 
     override fun onBindViewHolder(holder: ImageHolder, position: Int) {
-        holder.setData(mainArray[position].imageUri) //берем только юрл изи массива
+        holder.setData(mainArray[position])
     }
 
     override fun getItemCount(): Int {
@@ -33,7 +32,7 @@ class ImageAdapter : RecyclerView.Adapter<ImageAdapter.ImageHolder>() {
         }
     }
 
-    fun update(newList : ArrayList<SelectImageItem>){ //функция обновления массива
+    fun update(newList : ArrayList<String>){ //функция обновления массива
         mainArray.clear()
         mainArray.addAll(newList)
         notifyDataSetChanged()

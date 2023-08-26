@@ -4,7 +4,6 @@ package com.proalekse1.callboard.act
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +15,6 @@ import com.proalekse1.callboard.databinding.ActivityEditAdsBinding
 import com.proalekse1.callboard.dialogs.DialogSpinnerHelper
 import com.proalekse1.callboard.frag.FragmentCloseInterface
 import com.proalekse1.callboard.frag.ImageListFrag
-import com.proalekse1.callboard.frag.SelectImageItem
 import com.proalekse1.callboard.utils.CityHelper
 import com.proalekse1.callboard.utils.ImagePicker
 
@@ -42,13 +40,8 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
 
                 val returnValues = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
                 if(returnValues?.size!! > 1 && chooseImageFrag == null ) { //если нет фрагмента создаем его
-                    chooseImageFrag = ImageListFrag(this, returnValues)
-                    rootElement.scroolViewMain.visibility = View.GONE //скрываем вью
-                    val fm = supportFragmentManager.beginTransaction()
-                    fm.replace(
-                        R.id.place_holder, chooseImageFrag!!) //заменяем холдер на фрагмент
-                    fm.commit()
-                    // ImagePicker.getImages(this)
+
+                    openChooseImageFrag(returnValues) //запускаем фрагмент
 
                 } else if (chooseImageFrag != null){ //если фрагмент уже создан не надо его еще создавать
 
@@ -106,13 +99,31 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
     }
 
     fun onClickGetImages(view: View){ //слушатель нажатий для кнопки добавить картинку
-        ImagePicker.getImages(this, 3) //получаем фото
+
+        if (imageAdapter.mainArray.size == 0){ //если нет фото открываем фотоаппарат
+            ImagePicker.getImages(this, 3) //получаем фото
+        } else { //если уже выбирали фото открываем фрагмент для редактирования фото
+
+            openChooseImageFrag(imageAdapter.mainArray)
+        }
+
     }
 
-    override fun onFragClose(list : ArrayList<SelectImageItem>) { //метод интерфейса
+    override fun onFragClose(list : ArrayList<String>) { //метод интерфейса
         rootElement.scroolViewMain.visibility = View.VISIBLE //покажем вью
         imageAdapter.update(list) //обновляем список
         chooseImageFrag = null
     }
 
+    private fun openChooseImageFrag(newList : ArrayList<String>){ //заменяем холдер на фрагмент
+
+        chooseImageFrag = ImageListFrag(this, newList)
+        rootElement.scroolViewMain.visibility = View.GONE //скрываем вью
+        val fm = supportFragmentManager.beginTransaction()
+        fm.replace(
+            R.id.place_holder, chooseImageFrag!!) //заменяем холдер на фрагмент
+        fm.commit()
+        // ImagePicker.getImages(this)
+
+    }
 }
