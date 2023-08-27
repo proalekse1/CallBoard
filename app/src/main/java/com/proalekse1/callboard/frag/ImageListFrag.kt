@@ -65,7 +65,7 @@ class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, pri
 
         addImageItem.setOnMenuItemClickListener { //слушатель для добавить
             val imageCount = ImagePicker.MAX_IMAGE_COUNT - adapter.mainArray.size // находим сколько картинок показано
-            ImagePicker.getImages(activity as AppCompatActivity, imageCount)
+            ImagePicker.getImages(activity as AppCompatActivity, imageCount, ImagePicker.REQUES_CODE_GET_IMAGES)
             //Log.d("MyLog","Add item") //проверка
             true
         }
@@ -74,6 +74,12 @@ class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, pri
     fun updateAdapter(newList : ArrayList<String>){ //функция обновления адаптера если картинки уже добавляли
 
         adapter.updateAdapter(newList, false)
+    }
+
+    fun setSingleImage(uri : String, pos : Int){ //обновление одной картинки в адаптере
+
+        adapter.mainArray[pos] = uri
+        adapter.notifyDataSetChanged() //после обновляем весь адаптер
     }
 
 }

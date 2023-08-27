@@ -24,6 +24,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
     lateinit var rootElement:ActivityEditAdsBinding //для байндинга
     private val dialog = DialogSpinnerHelper() //инициализируем диалог
     private lateinit var imageAdapter : ImageAdapter //подключаем адаптер
+    var editImagePos = 0 //позиция картинки в массиве
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +50,14 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
 
                 }
             }
+        } else if(resultCode == RESULT_OK && requestCode == ImagePicker.REQUES_CODE_GET_SINGL_IMAGE){
+
+            if(data != null){
+
+                val uris = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
+            chooseImageFrag?.setSingleImage(uris?.get(0)!!, editImagePos)
+
+            }
         }
     }
 
@@ -60,7 +69,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
         when (requestCode) {
             PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) { //если разрешение получено
-                    ImagePicker.getImages(this, 3) //получаем фото
+                    ImagePicker.getImages(this, 3, ImagePicker.REQUES_CODE_GET_IMAGES) //получаем фото
                 } else {
 
                         Toast.makeText(
@@ -101,7 +110,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
     fun onClickGetImages(view: View){ //слушатель нажатий для кнопки добавить картинку
 
         if (imageAdapter.mainArray.size == 0){ //если нет фото открываем фотоаппарат
-            ImagePicker.getImages(this, 3) //получаем фото
+            ImagePicker.getImages(this, 3, ImagePicker.REQUES_CODE_GET_IMAGES) //получаем фото
         } else { //если уже выбирали фото открываем фрагмент для редактирования фото
 
             openChooseImageFrag(imageAdapter.mainArray)

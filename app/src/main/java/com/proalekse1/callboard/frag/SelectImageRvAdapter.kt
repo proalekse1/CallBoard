@@ -5,10 +5,13 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.proalekse1.callboard.R
+import com.proalekse1.callboard.act.EditAdsAct
+import com.proalekse1.callboard.utils.ImagePicker
 import com.proalekse1.callboard.utils.ItemTouchMoveCallback
 
 class SelectImageRvAdapter : RecyclerView.Adapter<SelectImageRvAdapter.ImageHolder>(), ItemTouchMoveCallback.ItemTouchAdapter { //для показа картинок во фрагменте
@@ -44,10 +47,17 @@ class SelectImageRvAdapter : RecyclerView.Adapter<SelectImageRvAdapter.ImageHold
     class ImageHolder(itemView: View, val context: Context) : RecyclerView.ViewHolder(itemView) { //холдер заполняет
         lateinit var tvTitle : TextView
         lateinit var image : ImageView
+        lateinit var imEditImage : ImageButton //кнопка редактирования картинки
 
         fun setData(item : String){
             tvTitle = itemView.findViewById(R.id.tvTitle)
             image = itemView.findViewById(R.id.imageView)
+            imEditImage = itemView.findViewById(R.id.imEditImage) //нашли кнопку редактирования картинки
+            imEditImage.setOnClickListener { //слушатель нажатий на кнопку редактирования
+
+                ImagePicker.getImages(context as EditAdsAct, 1, ImagePicker.REQUES_CODE_GET_SINGL_IMAGE)
+                context.editImagePos = adapterPosition //получаем позицию картинки
+            }
             tvTitle.text = context.resources.getStringArray(R.array.title_array)[adapterPosition] //получаем из массива с именами фоток
             image.setImageURI(Uri.parse(item)) //превращаем парсингом стринг в юрл
         }
