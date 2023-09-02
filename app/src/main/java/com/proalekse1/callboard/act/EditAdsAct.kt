@@ -44,7 +44,12 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
 
                     openChooseImageFrag(returnValues) //запускаем фрагмент
 
-                } else if (chooseImageFrag != null){ //если фрагмент уже создан не надо его еще создавать
+                } else if (returnValues.size == 1 && chooseImageFrag == null ){ //если выбрана 1 картинка
+
+                    imageAdapter.update(returnValues) //передаем массив с одной картинкой
+
+                }
+                else if (chooseImageFrag != null){ //если фрагмент уже создан не надо его еще создавать
 
                     chooseImageFrag?.updateAdapter(returnValues)
 
@@ -61,7 +66,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
         }
     }
 
-    override fun  onRequestPermissionsResult( //функцию запроса на доступ к фото на телефоне и к камере
+    override fun onRequestPermissionsResult( //функцию запроса на доступ к фото на телефоне и к камере
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray

@@ -18,7 +18,7 @@ class SelectImageRvAdapter : RecyclerView.Adapter<SelectImageRvAdapter.ImageHold
     val mainArray = ArrayList<String>() //массив для адаптера который хранит дата класс
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder { //создаем элемент
         val view = LayoutInflater.from(parent.context).inflate(R.layout.select_image_frag_item, parent, false)
-        return ImageHolder(view, parent.context)
+        return ImageHolder(view, parent.context, this)
     }
 
     override fun onBindViewHolder(holder: ImageHolder, position: Int) {
@@ -44,20 +44,32 @@ class SelectImageRvAdapter : RecyclerView.Adapter<SelectImageRvAdapter.ImageHold
         notifyDataSetChanged()
     }
 
-    class ImageHolder(itemView: View, val context: Context) : RecyclerView.ViewHolder(itemView) { //холдер заполняет
+    class ImageHolder(itemView: View, val context: Context, val adapter: SelectImageRvAdapter) : RecyclerView.ViewHolder(itemView) { //холдер заполняет
         lateinit var tvTitle : TextView
         lateinit var image : ImageView
         lateinit var imEditImage : ImageButton //кнопка редактирования картинки
+        lateinit var imDeleteImage : ImageButton //кнопка удаления картинки
 
         fun setData(item : String){
             tvTitle = itemView.findViewById(R.id.tvTitle)
             image = itemView.findViewById(R.id.imageView)
             imEditImage = itemView.findViewById(R.id.imEditImage) //нашли кнопку редактирования картинки
+            imDeleteImage = itemView.findViewById(R.id.imDelete) //нашли кнопку удаления картинки
+
             imEditImage.setOnClickListener { //слушатель нажатий на кнопку редактирования
 
                 ImagePicker.getImages(context as EditAdsAct, 1, ImagePicker.REQUES_CODE_GET_SINGL_IMAGE)
                 context.editImagePos = adapterPosition //получаем позицию картинки
             }
+
+            imDeleteImage.setOnClickListener { //слушатель нажатий на кнопку удаления картинки
+
+                adapter.mainArray.removeAt(adapterPosition) //удалили картинку из массива по позиции
+                adapter.notifyItemRemoved(adapterPosition) //сообщили адаптеру что удалили
+                for (n in 0 until adapter.mainArray.size) adapter.notifyItemChanged(n) //обновляем позиции после удаления картинки
+
+            }
+
             tvTitle.text = context.resources.getStringArray(R.array.title_array)[adapterPosition] //получаем из массива с именами фоток
             image.setImageURI(Uri.parse(item)) //превращаем парсингом стринг в юрл
         }
