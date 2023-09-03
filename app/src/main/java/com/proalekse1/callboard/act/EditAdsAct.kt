@@ -4,6 +4,7 @@ package com.proalekse1.callboard.act
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +17,7 @@ import com.proalekse1.callboard.dialogs.DialogSpinnerHelper
 import com.proalekse1.callboard.frag.FragmentCloseInterface
 import com.proalekse1.callboard.frag.ImageListFrag
 import com.proalekse1.callboard.utils.CityHelper
+import com.proalekse1.callboard.utils.ImageManager
 import com.proalekse1.callboard.utils.ImagePicker
 
 
@@ -46,8 +48,10 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
 
                 } else if (returnValues.size == 1 && chooseImageFrag == null ){ //если выбрана 1 картинка
 
-                    imageAdapter.update(returnValues) //передаем массив с одной картинкой
-
+                    //imageAdapter.update(returnValues) //передаем массив с одной картинкой
+                    val tempList = ImageManager.getImageSize(returnValues[0]) //берем одну картинку из массива и получаем список с размерами
+                    Log.d("MyLog", "Image wight : ${tempList[0]}") //проверка
+                    Log.d("MyLog", "Image height : ${tempList[1]}")
                 }
                 else if (chooseImageFrag != null){ //если фрагмент уже создан не надо его еще создавать
 
