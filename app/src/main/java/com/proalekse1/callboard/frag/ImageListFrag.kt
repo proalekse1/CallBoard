@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.proalekse1.callboard.R
 import com.proalekse1.callboard.databinding.ListImageFragBinding
+import com.proalekse1.callboard.utils.ImageManager
 import com.proalekse1.callboard.utils.ImagePicker
 import com.proalekse1.callboard.utils.ItemTouchMoveCallback
 
@@ -33,7 +34,9 @@ class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, pri
         touchHelper.attachToRecyclerView(rootElement.rcViewSelectImage) //поключили к ресайклер вью
         rootElement.rcViewSelectImage.layoutManager = LinearLayoutManager(activity) //то как будут располагаться картинки
         rootElement.rcViewSelectImage.adapter = adapter //присваиваем адаптер
-        adapter.updateAdapter(newList, true)
+        ImageManager.imageResize(newList) //запустили менеджер уменьшения картинок
+        // adapter.updateAdapter(newList, true)
+
 
             //activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit() //закрываем фрагмент
 

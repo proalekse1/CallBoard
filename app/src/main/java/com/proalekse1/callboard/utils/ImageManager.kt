@@ -1,10 +1,15 @@
 package com.proalekse1.callboard.utils
 
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import java.io.File
 
 object ImageManager { //для редактирования картинок
+    const val MAX_IMAGE_SIZE = 1000 //константа для решения надоли сжимать картинку
+    const val WIDTH = 0 //ширина картинки
+    const val HEIGHT = 1 //длина картинки
+
 
     fun getImageSize(uri : String) : List<Int>{ //получаем список с картинками
 
@@ -29,6 +34,40 @@ object ImageManager { //для редактирования картинок
             0
         }
         return rotation
+    }
+
+    fun imageResize(uris: List<String>){ //функция уменшения картинки
+        val tempList = ArrayList<List<Int>>() //массив в котором будет высота и ширина
+        for (n in uris.indices){ //перебираем массив
+
+            val size = getImageSize(uris[n])
+            Log.d("MyLog", "Width : ${size[WIDTH]} Height ${size[HEIGHT]}") //проверка реальног размера картинки
+
+            val imageRatio = size[WIDTH].toFloat() / size[HEIGHT].toFloat() //делим ширину на высоту и получаем коэффициент уменьшения
+
+            if(imageRatio > 1){ //проверяем какая сторона больше
+
+                if(size[WIDTH] > MAX_IMAGE_SIZE){ //проверяем надо ли вообще уменьшать
+
+                    tempList.add(listOf(MAX_IMAGE_SIZE, (MAX_IMAGE_SIZE / imageRatio).toInt())) //делаем ширину максимально разрешенную 1000, высоту находим с помощью коэффициента
+                } else { //если картинка маленькая, ничего не делаем
+                    tempList.add(listOf(size[WIDTH], size[HEIGHT])) //просто записываем размеры
+                }
+
+            } else {
+
+                if(size[HEIGHT] > MAX_IMAGE_SIZE){ //проверяем надо ли вообще уменьшать
+
+                    tempList.add(listOf((MAX_IMAGE_SIZE * imageRatio).toInt(), MAX_IMAGE_SIZE)) //делаем ширину максимально разрешенную 1000, высоту находим с помощью коэффициента
+                } else { //если картинка маленькая, ничего не делаем
+                    tempList.add(listOf(size[WIDTH], size[HEIGHT])) //просто записываем размеры
+                }
+
+            }
+            Log.d("MyLog", "Width : ${tempList[n][WIDTH]} Height ${tempList[n][HEIGHT]}")
+            //Log.d("MyLog", "Ratio : $imageRatio") //проверка коэффициента
+
+        } //заканчивается цикл
     }
 
 }
