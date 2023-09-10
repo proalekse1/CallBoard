@@ -3,6 +3,9 @@ package com.proalekse1.callboard.utils
 import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import java.io.File
 
 object ImageManager { //для редактирования картинок
@@ -36,12 +39,12 @@ object ImageManager { //для редактирования картинок
         return rotation
     }
 
-    fun imageResize(uris: List<String>){ //функция уменшения картинки
+    suspend fun imageResize(uris: List<String>) : String = withContext(Dispatchers.IO){ //функция уменшения картинки + корутина
         val tempList = ArrayList<List<Int>>() //массив в котором будет высота и ширина
         for (n in uris.indices){ //перебираем массив
 
             val size = getImageSize(uris[n])
-            Log.d("MyLog", "Width : ${size[WIDTH]} Height ${size[HEIGHT]}") //проверка реальног размера картинки
+            //Log.d("MyLog", "Width : ${size[WIDTH]} Height ${size[HEIGHT]}") //проверка реальног размера картинки
 
             val imageRatio = size[WIDTH].toFloat() / size[HEIGHT].toFloat() //делим ширину на высоту и получаем коэффициент уменьшения
 
@@ -64,10 +67,12 @@ object ImageManager { //для редактирования картинок
                 }
 
             }
-            Log.d("MyLog", "Width : ${tempList[n][WIDTH]} Height ${tempList[n][HEIGHT]}")
+            //Log.d("MyLog", "Width : ${tempList[n][WIDTH]} Height ${tempList[n][HEIGHT]}")
             //Log.d("MyLog", "Ratio : $imageRatio") //проверка коэффициента
 
         } //заканчивается цикл
+        delay(10000)
+        return@withContext "Done" //для примера возвращаем Готово
     }
 
 }

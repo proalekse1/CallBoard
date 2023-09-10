@@ -16,12 +16,17 @@ import com.proalekse1.callboard.databinding.ListImageFragBinding
 import com.proalekse1.callboard.utils.ImageManager
 import com.proalekse1.callboard.utils.ImagePicker
 import com.proalekse1.callboard.utils.ItemTouchMoveCallback
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, private val newList : ArrayList<String>) : Fragment() {
     lateinit var rootElement : ListImageFragBinding //подключили байнднг к фрагменту
     val adapter = SelectImageRvAdapter() //подлючили адаптер
     val dragCallback = ItemTouchMoveCallback(adapter) //подключили колбак для перемешивания
     val touchHelper = ItemTouchHelper(dragCallback) //для перемешивания картинок
+    private lateinit var job: Job
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? { //рисуем фрагмент
         rootElement = ListImageFragBinding.inflate(inflater) //подключили байнднг к фрагменту
         return rootElement.root //подключили байнднг к фрагменту
@@ -34,17 +39,18 @@ class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, pri
         touchHelper.attachToRecyclerView(rootElement.rcViewSelectImage) //поключили к ресайклер вью
         rootElement.rcViewSelectImage.layoutManager = LinearLayoutManager(activity) //то как будут располагаться картинки
         rootElement.rcViewSelectImage.adapter = adapter //присваиваем адаптер
-        ImageManager.imageResize(newList) //запустили менеджер уменьшения картинок
+        job = CoroutineScope(Dispatchers.Main).launch{
+            val text = ImageManager.imageResize(newList)
+            Log.d("MyLog", "Result : $text")
+        }  //запустили менеджер уменьшения картинок в корутине
         // adapter.updateAdapter(newList, true)
-
-
-            //activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit() //закрываем фрагмент
-
+        //activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit() //закрываем фрагмент
     }
 
     override fun onDetach() { //фрагмент отсоединяеся от активити
         super.onDetach()
         fragCloseInterface.onFragClose(adapter.mainArray) //запускается метод на активити
+        job.cancel()
        /* Log.d("MyLog", "Title 0 : ${adapter.mainArray[0].title}") //проверка перемешивания картинок
         Log.d("MyLog", "Title 1 : ${adapter.mainArray[1].title}")
         Log.d("MyLog", "Title 2 : ${adapter.mainArray[2].title}")*/
