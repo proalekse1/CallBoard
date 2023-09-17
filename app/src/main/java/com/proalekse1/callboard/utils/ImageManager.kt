@@ -1,17 +1,19 @@
 package com.proalekse1.callboard.utils
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.exifinterface.media.ExifInterface
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.io.File
 
 object ImageManager { //для редактирования картинок
-    const val MAX_IMAGE_SIZE = 1000 //константа для решения надоли сжимать картинку
-    const val WIDTH = 0 //ширина картинки
-    const val HEIGHT = 1 //длина картинки
+    private const val MAX_IMAGE_SIZE = 1000 //константа для решения надоли сжимать картинку
+    private const val WIDTH = 0 //ширина картинки
+    private const val HEIGHT = 1 //длина картинки
 
 
     fun getImageSize(uri : String) : List<Int>{ //получаем список с картинками
@@ -39,8 +41,9 @@ object ImageManager { //для редактирования картинок
         return rotation
     }
 
-    suspend fun imageResize(uris: List<String>) : String = withContext(Dispatchers.IO){ //функция уменшения картинки + корутина
+    suspend fun imageResize(uris: List<String>) : List<Bitmap> = withContext(Dispatchers.IO){ //функция уменшения картинки + корутина
         val tempList = ArrayList<List<Int>>() //массив в котором будет высота и ширина
+        val bitmapList = ArrayList<Bitmap>() //массив в котором будет bitmap
         for (n in uris.indices){ //перебираем массив
 
             val size = getImageSize(uris[n])
@@ -71,8 +74,20 @@ object ImageManager { //для редактирования картинок
             //Log.d("MyLog", "Ratio : $imageRatio") //проверка коэффициента
 
         } //заканчивается цикл
-        delay(10000)
-        return@withContext "Done" //для примера возвращаем Готово
+
+        for(i in uris.indices) { //берем циклом картинки из массива по одной
+
+         val e = kotlin.runCatching { //специальный блок который выдаст exception(исключение), выдает успех или неуспех
+
+              bitmapList.add(Picasso.get().load(File(uris[i])).resize(tempList[i][WIDTH], tempList[i][HEIGHT]).get()) //это трудоемкая функция которая будет блокировать, поэтому ее мы запускаем на второстепенном потоке
+
+          }
+
+            Log.d("MyLog", "Bitmap load done: ${e.isSuccess}") //проверка исключения
+
+        }
+        //delay(10000)//задержка пример трудоемкой операции
+        return@withContext bitmapList // возвращаем список bitmap
     }
 
 }

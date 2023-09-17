@@ -3,6 +3,7 @@ package com.proalekse1.callboard.act
 
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -122,18 +123,19 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
             ImagePicker.getImages(this, 3, ImagePicker.REQUES_CODE_GET_IMAGES) //получаем фото
         } else { //если уже выбирали фото открываем фрагмент для редактирования фото
 
-            openChooseImageFrag(imageAdapter.mainArray)
+            openChooseImageFrag(null)
+            chooseImageFrag?.updateAdapterFromEdit(imageAdapter.mainArray)
         }
 
     }
 
-    override fun onFragClose(list : ArrayList<String>) { //метод интерфейса
+    override fun onFragClose(list : ArrayList<Bitmap>) { //метод интерфейса
         rootElement.scroolViewMain.visibility = View.VISIBLE //покажем вью
         imageAdapter.update(list) //обновляем список
         chooseImageFrag = null
     }
 
-    private fun openChooseImageFrag(newList : ArrayList<String>){ //заменяем холдер на фрагмент
+    private fun openChooseImageFrag(newList : ArrayList<String>?){ //заменяем холдер на фрагмент
 
         chooseImageFrag = ImageListFrag(this, newList)
         rootElement.scroolViewMain.visibility = View.GONE //скрываем вью

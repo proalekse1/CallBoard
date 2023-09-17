@@ -1,6 +1,7 @@
 package com.proalekse1.callboard.frag
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +16,7 @@ import com.proalekse1.callboard.utils.ImagePicker
 import com.proalekse1.callboard.utils.ItemTouchMoveCallback
 
 class SelectImageRvAdapter : RecyclerView.Adapter<SelectImageRvAdapter.ImageHolder>(), ItemTouchMoveCallback.ItemTouchAdapter { //для показа картинок во фрагменте
-    val mainArray = ArrayList<String>() //массив для адаптера который хранит дата класс
+    val mainArray = ArrayList<Bitmap>() //массив для адаптера который хранит дата класс
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder { //создаем элемент
         val view = LayoutInflater.from(parent.context).inflate(R.layout.select_image_frag_item, parent, false)
         return ImageHolder(view, parent.context, this)
@@ -50,7 +51,7 @@ class SelectImageRvAdapter : RecyclerView.Adapter<SelectImageRvAdapter.ImageHold
         lateinit var imEditImage : ImageButton //кнопка редактирования картинки
         lateinit var imDeleteImage : ImageButton //кнопка удаления картинки
 
-        fun setData(item : String){
+        fun setData(bitmap : Bitmap){
             tvTitle = itemView.findViewById(R.id.tvTitle)
             image = itemView.findViewById(R.id.imageView)
             imEditImage = itemView.findViewById(R.id.imEditImage) //нашли кнопку редактирования картинки
@@ -71,10 +72,10 @@ class SelectImageRvAdapter : RecyclerView.Adapter<SelectImageRvAdapter.ImageHold
             }
 
             tvTitle.text = context.resources.getStringArray(R.array.title_array)[adapterPosition] //получаем из массива с именами фоток
-            image.setImageURI(Uri.parse(item)) //превращаем парсингом стринг в юрл
+            image.setImageBitmap(bitmap) //превращаем парсингом стринг в юрл
         }
     }
-    fun updateAdapter(newList : List<String>, needClear : Boolean){
+    fun updateAdapter(newList : List<Bitmap>, needClear : Boolean){
         if(needClear) mainArray.clear() //очищаем список с картинками если надо
         mainArray.addAll(newList) //заполняем
         notifyDataSetChanged() //сообщаем что данные изменились
