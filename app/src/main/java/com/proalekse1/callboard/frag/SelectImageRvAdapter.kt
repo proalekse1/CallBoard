@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.proalekse1.callboard.R
@@ -58,7 +59,6 @@ class SelectImageRvAdapter : RecyclerView.Adapter<SelectImageRvAdapter.ImageHold
             imDeleteImage = itemView.findViewById(R.id.imDelete) //нашли кнопку удаления картинки
 
             imEditImage.setOnClickListener { //слушатель нажатий на кнопку редактирования
-
                 ImagePicker.getImages(context as EditAdsAct, 1, ImagePicker.REQUES_CODE_GET_SINGL_IMAGE)
                 context.editImagePos = adapterPosition //получаем позицию картинки
             }

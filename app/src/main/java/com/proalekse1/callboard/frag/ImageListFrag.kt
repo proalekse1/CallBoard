@@ -1,5 +1,6 @@
 package com.proalekse1.callboard.frag
 
+import android.app.Activity
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
@@ -7,13 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.proalekse1.callboard.R
 import com.proalekse1.callboard.databinding.ListImageFragBinding
+import com.proalekse1.callboard.dialoghelper.ProgressDialog
 import com.proalekse1.callboard.utils.ImageManager
 import com.proalekse1.callboard.utils.ImagePicker
 import com.proalekse1.callboard.utils.ItemTouchMoveCallback
@@ -42,10 +46,7 @@ class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, pri
         rootElement.rcViewSelectImage.adapter = adapter //присваиваем адаптер
 
         if(newList != null){ //если первый раз то запускаем компрессию картинок
-        job = CoroutineScope(Dispatchers.Main).launch {  //запустили менеджер уменьшения картинок в корутине
-            val bitmapList = ImageManager.imageResize(newList)
-            adapter.updateAdapter(bitmapList, true) //обновляем адаптер
-        }
+            resizeSelectedImages(newList, true)
         }
     }
 
@@ -60,6 +61,15 @@ class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, pri
        /* Log.d("MyLog", "Title 0 : ${adapter.mainArray[0].title}") //проверка перемешивания картинок
         Log.d("MyLog", "Title 1 : ${adapter.mainArray[1].title}")
         Log.d("MyLog", "Title 2 : ${adapter.mainArray[2].title}")*/
+    }
+
+    private fun resizeSelectedImages(newList: ArrayList<String>, needClear: Boolean){ //функция для оптимизации корутины
+        job = CoroutineScope(Dispatchers.Main).launch {  //запустили менеджер уменьшения картинок в корутине
+            val dialog = ProgressDialog.createProgressDialog(activity as Activity) //вставляем прогресс бар
+            val bitmapList = ImageManager.imageResize(newList) //конвертация картинки
+            dialog.dismiss() //закрываем прогресс бар
+            adapter.updateAdapter(bitmapList, needClear) //обновляем адаптер
+        }
     }
 
     private fun setUpToolbar(){ //для тулбара
@@ -86,18 +96,18 @@ class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, pri
         }
     }
 
-    fun updateAdapter(newList : ArrayList<String>){ //функция обновления адаптера если картинки уже добавляли
-        job = CoroutineScope(Dispatchers.Main).launch{  //запустили менеджер уменьшения картинок в корутине
-            val bitmapList = ImageManager.imageResize(newList)
-            adapter.updateAdapter(bitmapList, false) //обновляем адаптер и не очищаем его
-        }
+    fun updateAdapter(newList : ArrayList<String>){ //функция обновления адаптера если картинки уже добавляли а потом удалили
+        resizeSelectedImages(newList, false)
     }
 
     fun setSingleImage(uri : String, pos : Int){ //обновление одной картинки в адаптере
+        val pBar = rootElement.rcViewSelectImage[pos].findViewById<ProgressBar>(R.id.pBar) //получаем доступ к одному элементу из адаптера
         job = CoroutineScope(Dispatchers.Main).launch{  //запустили менеджер уменьшения картинок в корутине
+            pBar.visibility = View.VISIBLE//делаем прогресс бар видимым
             val bitmapList = ImageManager.imageResize(listOf(uri))
+            pBar.visibility = View.GONE//делаем прогресс бар невидимым
             adapter.mainArray[pos] = bitmapList[0]
-            adapter.notifyDataSetChanged() //после обновляем весь адаптер
+            adapter.notifyItemChanged(pos) //после обновляем один элемент по позиции
         }
     }
 
