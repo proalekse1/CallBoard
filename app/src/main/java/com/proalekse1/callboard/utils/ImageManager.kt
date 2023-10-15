@@ -3,6 +3,7 @@ package com.proalekse1.callboard.utils
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
+import android.widget.ImageView
 import androidx.exifinterface.media.ExifInterface
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
@@ -39,6 +40,15 @@ object ImageManager { //для редактирования картинок
             0
         }
         return rotation
+    }
+
+    fun chooseScaleType(im: ImageView, bitMap: Bitmap){ //растягиваем или нет картинку если вертикальная
+
+        if(bitMap.width > bitMap.height){
+            im.scaleType = ImageView.ScaleType.CENTER_CROP //растягиваем если горизонтальная
+        }else {
+            im.scaleType = ImageView.ScaleType.CENTER_INSIDE //ничего не делаем если вертикальная
+        }
     }
 
     suspend fun imageResize(uris: List<String>) : List<Bitmap> = withContext(Dispatchers.IO){ //функция уменшения картинки + корутина

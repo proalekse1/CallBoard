@@ -2,25 +2,22 @@ package com.proalekse1.callboard.frag
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.net.Uri
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.proalekse1.callboard.R
 import com.proalekse1.callboard.act.EditAdsAct
+import com.proalekse1.callboard.databinding.SelectImageFragItemBinding
+import com.proalekse1.callboard.utils.AdapterCallBack
+import com.proalekse1.callboard.utils.ImageManager
 import com.proalekse1.callboard.utils.ImagePicker
 import com.proalekse1.callboard.utils.ItemTouchMoveCallback
 
-class SelectImageRvAdapter : RecyclerView.Adapter<SelectImageRvAdapter.ImageHolder>(), ItemTouchMoveCallback.ItemTouchAdapter { //для показа картинок во фрагменте
+class SelectImageRvAdapter(val adapterCallback: AdapterCallBack) : RecyclerView.Adapter<SelectImageRvAdapter.ImageHolder>(), ItemTouchMoveCallback.ItemTouchAdapter { //для показа картинок во фрагменте
     val mainArray = ArrayList<Bitmap>() //массив для адаптера который хранит дата класс
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageHolder { //создаем элемент
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.select_image_frag_item, parent, false)
-        return ImageHolder(view, parent.context, this)
+        val viewBinding = SelectImageFragItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ImageHolder(viewBinding, parent.context, this)
     }
 
     override fun onBindViewHolder(holder: ImageHolder, position: Int) {
@@ -46,33 +43,27 @@ class SelectImageRvAdapter : RecyclerView.Adapter<SelectImageRvAdapter.ImageHold
         notifyDataSetChanged()
     }
 
-    class ImageHolder(itemView: View, val context: Context, val adapter: SelectImageRvAdapter) : RecyclerView.ViewHolder(itemView) { //холдер заполняет
-        lateinit var tvTitle : TextView
-        lateinit var image : ImageView
-        lateinit var imEditImage : ImageButton //кнопка редактирования картинки
-        lateinit var imDeleteImage : ImageButton //кнопка удаления картинки
+    class ImageHolder(private val viewBinding: SelectImageFragItemBinding, val context: Context, val adapter: SelectImageRvAdapter) : RecyclerView.ViewHolder(viewBinding.root) { //холдер заполняет
 
-        fun setData(bitmap : Bitmap){
-            tvTitle = itemView.findViewById(R.id.tvTitle)
-            image = itemView.findViewById(R.id.imageView)
-            imEditImage = itemView.findViewById(R.id.imEditImage) //нашли кнопку редактирования картинки
-            imDeleteImage = itemView.findViewById(R.id.imDelete) //нашли кнопку удаления картинки
+        fun setData(bitMap : Bitmap){
 
-            imEditImage.setOnClickListener { //слушатель нажатий на кнопку редактирования
+            viewBinding.imEditImage.setOnClickListener { //слушатель нажатий на кнопку редактирования
                 ImagePicker.getImages(context as EditAdsAct, 1, ImagePicker.REQUES_CODE_GET_SINGL_IMAGE)
                 context.editImagePos = adapterPosition //получаем позицию картинки
             }
 
-            imDeleteImage.setOnClickListener { //слушатель нажатий на кнопку удаления картинки
+            viewBinding.imDelete.setOnClickListener { //слушатель нажатий на кнопку удаления картинки
 
                 adapter.mainArray.removeAt(adapterPosition) //удалили картинку из массива по позиции
                 adapter.notifyItemRemoved(adapterPosition) //сообщили адаптеру что удалили
                 for (n in 0 until adapter.mainArray.size) adapter.notifyItemChanged(n) //обновляем позиции после удаления картинки
+                adapter.adapterCallback.onItemDelete() //запускаем интерфейс в адаптере
 
             }
 
-            tvTitle.text = context.resources.getStringArray(R.array.title_array)[adapterPosition] //получаем из массива с именами фоток
-            image.setImageBitmap(bitmap) //превращаем парсингом стринг в юрл
+            viewBinding.tvTitle.text = context.resources.getStringArray(R.array.title_array)[adapterPosition] //получаем из массива с именами фоток
+            ImageManager.chooseScaleType(viewBinding.imageView, bitMap) //растягиваем или нет картинку
+            viewBinding.imageView.setImageBitmap(bitMap) //превращаем парсингом стринг в юрл
         }
     }
     fun updateAdapter(newList : List<Bitmap>, needClear : Boolean){
