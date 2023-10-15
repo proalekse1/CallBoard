@@ -23,10 +23,10 @@ import com.proalekse1.callboard.utils.ImagePicker
 
 
 class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активити для новых объявлений
-    private var chooseImageFrag : ImageListFrag? = null //для отслеживания выбрали уже картинку во фрагменте или нет
+    var chooseImageFrag : ImageListFrag? = null //для отслеживания выбрали уже картинку во фрагменте или нет
     lateinit var rootElement:ActivityEditAdsBinding //для байндинга
     private val dialog = DialogSpinnerHelper() //инициализируем диалог
-    private lateinit var imageAdapter : ImageAdapter //подключаем адаптер
+    lateinit var imageAdapter : ImageAdapter //подключаем адаптер
     var editImagePos = 0 //позиция картинки в массиве
 
 
@@ -39,36 +39,8 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) { //получаем результат когда добавляем фото на объявление
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK && requestCode == ImagePicker.REQUES_CODE_GET_IMAGES) {
-            if(data != null){
+        ImagePicker.showSelectedImages(resultCode, requestCode, data, this) //функция выбора картинки
 
-                val returnValues = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
-                if(returnValues?.size!! > 1 && chooseImageFrag == null ) { //если нет фрагмента создаем его
-
-                    openChooseImageFrag(returnValues) //запускаем фрагмент
-
-                } else if (returnValues.size == 1 && chooseImageFrag == null ){ //если выбрана 1 картинка
-
-                    //imageAdapter.update(returnValues) //передаем массив с одной картинкой
-                    val tempList = ImageManager.getImageSize(returnValues[0]) //берем одну картинку из массива и получаем список с размерами
-                    Log.d("MyLog", "Image wight : ${tempList[0]}") //проверка
-                    Log.d("MyLog", "Image height : ${tempList[1]}")
-                }
-                else if (chooseImageFrag != null){ //если фрагмент уже создан не надо его еще создавать
-
-                    chooseImageFrag?.updateAdapter(returnValues)
-
-                }
-            }
-        } else if(resultCode == RESULT_OK && requestCode == ImagePicker.REQUES_CODE_GET_SINGL_IMAGE){
-
-            if(data != null){
-
-                val uris = data.getStringArrayListExtra(Pix.IMAGE_RESULTS)
-            chooseImageFrag?.setSingleImage(uris?.get(0)!!, editImagePos)
-
-            }
-        }
     }
 
     override fun onRequestPermissionsResult( //функцию запроса на доступ к фото на телефоне и к камере
@@ -135,7 +107,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
         chooseImageFrag = null
     }
 
-    private fun openChooseImageFrag(newList : ArrayList<String>?){ //заменяем холдер на фрагмент
+    fun openChooseImageFrag(newList : ArrayList<String>?){ //заменяем холдер на фрагмент
 
         chooseImageFrag = ImageListFrag(this, newList)
         rootElement.scroolViewMain.visibility = View.GONE //скрываем вью
