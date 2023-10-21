@@ -28,17 +28,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, private val newList : ArrayList<String>?) : Fragment(), AdapterCallBack {
-    lateinit var rootElement : ListImageFragBinding //подключили байнднг к фрагменту
+class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, private val newList : ArrayList<String>?) : BaseSelectImageFrag(), AdapterCallBack {
+
     val adapter = SelectImageRvAdapter(this) //подлючили адаптер
     val dragCallback = ItemTouchMoveCallback(adapter) //подключили колбак для перемешивания
     val touchHelper = ItemTouchHelper(dragCallback) //для перемешивания картинок
     private var job: Job? = null
     private var addImageItem: MenuItem? = null //кнопка добаления картинки
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? { //рисуем фрагмент
-        rootElement = ListImageFragBinding.inflate(inflater) //подключили байнднг к фрагменту
-        return rootElement.root //подключили байнднг к фрагменту
-    }
 
     override fun onItemDelete() { //функци интерфейса интерфейс
         addImageItem?.isVisible = true //появляется кнопка добавить
@@ -47,13 +43,15 @@ class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, pri
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) { //создаем фрагмент
         super.onViewCreated(view, savedInstanceState)
         setUpToolbar() //запустили тулбар
-        //val rcView = view.findViewById<RecyclerView>(R.id.rcViewSelectImage) //находим ресайклер вью старым способом без байндинга
-        touchHelper.attachToRecyclerView(rootElement.rcViewSelectImage) //поключили к ресайклер вью
-        rootElement.rcViewSelectImage.layoutManager = LinearLayoutManager(activity) //то как будут располагаться картинки
-        rootElement.rcViewSelectImage.adapter = adapter //присваиваем адаптер
+        binding.apply {
+            //val rcView = view.findViewById<RecyclerView>(R.id.rcViewSelectImage) //находим ресайклер вью старым способом без байндинга
+            touchHelper.attachToRecyclerView(rcViewSelectImage) //поключили к ресайклер вью
+            rcViewSelectImage.layoutManager =
+                LinearLayoutManager(activity) //то как будут располагаться картинки
+            rcViewSelectImage.adapter = adapter //присваиваем адаптер
 
-        if(newList != null){ //если первый раз то запускаем компрессию картинок
-            resizeSelectedImages(newList, true)
+            if (newList != null) resizeSelectedImages(newList, true) //если первый раз то запускаем компрессию картинок
+
         }
     }
 
@@ -81,27 +79,39 @@ class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, pri
     }
 
     private fun setUpToolbar(){ //для тулбара
-        rootElement.tb.inflateMenu(R.menu.menu_choose_image) //надули меню тулбара
-        val deleteItem = rootElement.tb.menu.findItem(R.id.id_delete_image) //создали переменные для кнопок
-        addImageItem = rootElement.tb.menu.findItem(R.id.id_add_image) //кнопка добавления картинки
 
-        rootElement.tb.setNavigationOnClickListener { //слушатель для кнопки назад
-            activity?.supportFragmentManager?.beginTransaction()?.remove(this)?.commit() //закрываем фрагмент
-            //Log.d("MyLog","Home item") //проверка
-        }
+        binding.apply {
+            tb.inflateMenu(R.menu.menu_choose_image) //надули меню тулбара
+            val deleteItem = tb.menu.findItem(R.id.id_delete_image) //создали переменные для кнопок
+            addImageItem = tb.menu.findItem(R.id.id_add_image) //кнопка добавления картинки
 
-        deleteItem.setOnMenuItemClickListener { //слушатель для удалить
-            adapter.updateAdapter(ArrayList(), true) //передаем пустой масси в адаптер таким образом его очищаем
-            addImageItem?.isVisible = true //появляется кнопка добавить
-            //Log.d("MyLog","Delete item") //проверка
-            true
-        }
+            tb.setNavigationOnClickListener { //слушатель для кнопки назад
+                activity?.supportFragmentManager?.beginTransaction()?.remove(this@ImageListFrag)
+                    ?.commit() //закрываем фрагмент
+                //Log.d("MyLog","Home item") //проверка
+            }
 
-        addImageItem?.setOnMenuItemClickListener { //слушатель для добавить
-            val imageCount = ImagePicker.MAX_IMAGE_COUNT - adapter.mainArray.size // находим сколько картинок показано
-            ImagePicker.getImages(activity as AppCompatActivity, imageCount, ImagePicker.REQUES_CODE_GET_IMAGES)
-            //Log.d("MyLog","Add item") //проверка
-            true
+            deleteItem.setOnMenuItemClickListener { //слушатель для удалить
+                adapter.updateAdapter(
+                    ArrayList(),
+                    true
+                ) //передаем пустой масси в адаптер таким образом его очищаем
+                addImageItem?.isVisible = true //появляется кнопка добавить
+                //Log.d("MyLog","Delete item") //проверка
+                true
+            }
+
+            addImageItem?.setOnMenuItemClickListener { //слушатель для добавить
+                val imageCount =
+                    ImagePicker.MAX_IMAGE_COUNT - adapter.mainArray.size // находим сколько картинок показано
+                ImagePicker.getImages(
+                    activity as AppCompatActivity,
+                    imageCount,
+                    ImagePicker.REQUES_CODE_GET_IMAGES
+                )
+                //Log.d("MyLog","Add item") //проверка
+                true
+            }
         }
     }
 
@@ -110,7 +120,7 @@ class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, pri
     }
 
     fun setSingleImage(uri : String, pos : Int){ //обновление одной картинки в адаптере
-        val pBar = rootElement.rcViewSelectImage[pos].findViewById<ProgressBar>(R.id.pBar) //получаем доступ к одному элементу из адаптера
+        val pBar = binding.rcViewSelectImage[pos].findViewById<ProgressBar>(R.id.pBar) //получаем доступ к одному элементу из адаптера
         job = CoroutineScope(Dispatchers.Main).launch{  //запустили менеджер уменьшения картинок в корутине
             pBar.visibility = View.VISIBLE//делаем прогресс бар видимым
             val bitmapList = ImageManager.imageResize(listOf(uri))
