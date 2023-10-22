@@ -3,19 +3,15 @@ package com.proalekse1.callboard.frag
 import android.app.Activity
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.proalekse1.callboard.R
 import com.proalekse1.callboard.databinding.ListImageFragBinding
 import com.proalekse1.callboard.dialoghelper.ProgressDialog
@@ -28,13 +24,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, private val newList : ArrayList<String>?) : BaseSelectImageFrag(), AdapterCallBack {
+class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, private val newList : ArrayList<String>?) : BaseAdsFrag(), AdapterCallBack {
 
     val adapter = SelectImageRvAdapter(this) //подлючили адаптер
     val dragCallback = ItemTouchMoveCallback(adapter) //подключили колбак для перемешивания
     val touchHelper = ItemTouchHelper(dragCallback) //для перемешивания картинок
     private var job: Job? = null
     private var addImageItem: MenuItem? = null //кнопка добаления картинки
+    lateinit var binding: ListImageFragBinding //подключаем байндинг
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = ListImageFragBinding.inflate(layoutInflater) //подключаем байндинг
+        adView = binding.adView //запускаем рекламный баннер
+        return binding.root //подключаем байндинг
+    }
 
     override fun onItemDelete() { //функци интерфейса интерфейс
         addImageItem?.isVisible = true //появляется кнопка добавить
@@ -68,6 +71,12 @@ class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, pri
         Log.d("MyLog", "Title 2 : ${adapter.mainArray[2].title}")*/
     }
 
+    override fun onClose() { //интерфейс для закрытия рекламы
+        super.onClose()
+        activity?.supportFragmentManager?.beginTransaction()?.remove(this@ImageListFrag)
+            ?.commit() //закрываем фрагмент
+    }
+
     private fun resizeSelectedImages(newList: ArrayList<String>, needClear: Boolean){ //функция для оптимизации корутины
         job = CoroutineScope(Dispatchers.Main).launch {  //запустили менеджер уменьшения картинок в корутине
             val dialog = ProgressDialog.createProgressDialog(activity as Activity) //вставляем прогресс бар
@@ -86,8 +95,8 @@ class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, pri
             addImageItem = tb.menu.findItem(R.id.id_add_image) //кнопка добавления картинки
 
             tb.setNavigationOnClickListener { //слушатель для кнопки назад
-                activity?.supportFragmentManager?.beginTransaction()?.remove(this@ImageListFrag)
-                    ?.commit() //закрываем фрагмент
+
+                showInterAd() //показ второй рекламы
                 //Log.d("MyLog","Home item") //проверка
             }
 
