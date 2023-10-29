@@ -89,6 +89,13 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
         }
     }
 
+    fun onClickSelectCat(view: View){ //слушатель нажатий для текст вью с категориями
+
+        val listCity = resources.getStringArray(R.array.category).toMutableList() as ArrayList //получаем список категорий из массива
+            dialog.showSpinnerDialog(this, listCity, rootElement.tvCat) //запускаем диалог
+
+    }
+
     fun onClickGetImages(view: View){ //слушатель нажатий для кнопки добавить картинку
 
         if (imageAdapter.mainArray.size == 0){ //если нет фото открываем фотоаппарат
