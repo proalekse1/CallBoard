@@ -13,6 +13,7 @@ import com.fxn.pix.Pix
 import com.fxn.utility.PermUtil
 import com.proalekse1.callboard.R
 import com.proalekse1.callboard.adapters.ImageAdapter
+import com.proalekse1.callboard.database.DbManager
 import com.proalekse1.callboard.databinding.ActivityEditAdsBinding
 import com.proalekse1.callboard.dialogs.DialogSpinnerHelper
 import com.proalekse1.callboard.frag.FragmentCloseInterface
@@ -105,6 +106,12 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
             openChooseImageFrag(null)
             chooseImageFrag?.updateAdapterFromEdit(imageAdapter.mainArray)
         }
+
+    }
+
+    fun onClickPublish(view: View){ //слушатель для кнопки опубликовать
+        val dbManager = DbManager()
+        dbManager.publishAd()
 
     }
 
