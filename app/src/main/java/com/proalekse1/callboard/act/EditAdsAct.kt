@@ -13,6 +13,7 @@ import com.fxn.pix.Pix
 import com.fxn.utility.PermUtil
 import com.proalekse1.callboard.R
 import com.proalekse1.callboard.adapters.ImageAdapter
+import com.proalekse1.callboard.data.Ad
 import com.proalekse1.callboard.database.DbManager
 import com.proalekse1.callboard.databinding.ActivityEditAdsBinding
 import com.proalekse1.callboard.dialogs.DialogSpinnerHelper
@@ -28,6 +29,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
     lateinit var rootElement:ActivityEditAdsBinding //для байндинга
     private val dialog = DialogSpinnerHelper() //инициализируем диалог
     lateinit var imageAdapter : ImageAdapter //подключаем адаптер
+    private val dbManager = DbManager() //инициализируем дата менеджер
     var editImagePos = 0 //позиция картинки в массиве
 
 
@@ -110,9 +112,26 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
     }
 
     fun onClickPublish(view: View){ //слушатель для кнопки опубликовать
-        val dbManager = DbManager()
-        dbManager.publishAd()
 
+        dbManager.publishAd(fillAd()) //запустили функцию заполнения дата класса
+
+    }
+
+    private fun fillAd(): Ad{ //функция заполнения дата класса
+        val ad: Ad //дата класс
+        rootElement.apply{
+            ad = Ad(tvCountry.text.toString(), //достаем все что ввели при заполнении объявления
+                tvCity.text.toString(),
+                editTel.text.toString(),
+                edIndex.text.toString(),
+                checkBoxWithSend.isChecked.toString(),
+                tvCat.text.toString(),
+                edPrice.text.toString(),
+                edDescription.text.toString(),
+                dbManager.db.push().key //получаем уникальный ключ из fire base
+            )
+        }
+        return ad //возвращает заполненное объявление
     }
 
     override fun onFragClose(list : ArrayList<Bitmap>) { //метод интерфейса
