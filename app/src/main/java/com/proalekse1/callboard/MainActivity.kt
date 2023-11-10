@@ -17,6 +17,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.proalekse1.callboard.act.EditAdsAct
+import com.proalekse1.callboard.database.DbManager
 import com.proalekse1.callboard.databinding.ActivityMainBinding
 import com.proalekse1.callboard.dialoghelper.DialogConst
 
@@ -29,6 +30,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var rootElement:ActivityMainBinding //подключаем байндинг
     private var dialogHelper = DialogHelper(this)
     val mAuth = FirebaseAuth.getInstance() //инициализировали Firebase
+    val dbManager = DbManager() //создаем переменную для DbManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val view = rootElement.root //подключаем байндинг
         setContentView(view) //подключаем байндинг
         init()
+        dbManager.readDataFromDb() //запуск чтения с базы данных
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean { //слушатель кнопки new
