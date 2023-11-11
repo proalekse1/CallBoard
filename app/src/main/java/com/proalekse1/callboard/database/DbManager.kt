@@ -23,10 +23,10 @@ class DbManager { //для управления базой данных из Ad.
         db.addListenerForSingleValueEvent(object: ValueEventListener {
 
             override fun onDataChange(snapshot: DataSnapshot) { //снимок базы выдает файл snapshot
-
+                val adArray = ArrayList<Ad>() //создаем список
                 for(item in snapshot.children) { //snapshot.children путь к ключу
                     val ad = item.children.iterator().next().child("ad").getValue(Ad::class.java) //полный путь до узла ad записанный в переменную
-                    Log.d("MyLog", "Data: ${ad?.country}") //children.iterator().next() путь к УИД
+                    if (ad != null) adArray.add(ad) //помещаем в список данные из объявления
                 }
             }
 
