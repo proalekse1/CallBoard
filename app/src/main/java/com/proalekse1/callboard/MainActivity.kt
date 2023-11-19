@@ -11,13 +11,17 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.proalekse1.callboard.act.EditAdsAct
+import com.proalekse1.callboard.adapters.AdsRcAdapter
+import com.proalekse1.callboard.data.Ad
 import com.proalekse1.callboard.database.DbManager
+import com.proalekse1.callboard.database.ReadDataCallback
 import com.proalekse1.callboard.databinding.ActivityMainBinding
 import com.proalekse1.callboard.dialoghelper.DialogConst
 
@@ -25,12 +29,13 @@ import com.proalekse1.callboard.dialoghelper.DialogConst
 import com.proalekse1.callboard.dialoghelper.GoogleAccConst
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, ReadDataCallback {
     private lateinit var tvAccount: TextView //для доступа к хидеру
     private lateinit var rootElement:ActivityMainBinding //подключаем байндинг
     private var dialogHelper = DialogHelper(this)
     val mAuth = FirebaseAuth.getInstance() //инициализировали Firebase
-    val dbManager = DbManager() //создаем переменную для DbManager
+    val dbManager = DbManager(this) //создаем переменную для DbManager
+    val adapter = AdsRcAdapter() //создали адаптер
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +43,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val view = rootElement.root //подключаем байндинг
         setContentView(view) //подключаем байндинг
         init()
+        initRecyclerView() // запускаем ресайклер вью
         dbManager.readDataFromDb() //запуск чтения с базы данных
     }
 
@@ -73,6 +79,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun onStart() {
+        super.onStart()
+        uiUpdate(mAuth.currentUser)
+    }
+
     private fun init(){
         setSupportActionBar(rootElement.mainContent.toolbar) //подключаем наш тулбар
         val toggle = ActionBarDrawerToggle(this, rootElement.drawerLayout, rootElement.mainContent.toolbar, R.string.open, R.string.close) //кнопка в тулбаре открытия меню
@@ -82,9 +93,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         tvAccount = rootElement.navView.getHeaderView(0).findViewById(R.id.tvAccountEmail) //получаем доступ к хидеру
     }
 
-    override fun onStart() {
-        super.onStart()
-        uiUpdate(mAuth.currentUser)
+    private fun initRecyclerView(){ //инициализируем ресайклер вью
+        rootElement.apply {
+            mainContent.rcView.layoutManager = LinearLayoutManager(this@MainActivity)
+            mainContent.rcView.adapter = adapter
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean { //слушатель для кнопок меню
@@ -131,6 +144,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             user.email
         }
+    }
+
+    override fun readData(list: List<Ad>) { //интерфейс для получения данных из базы данных для показа в ресайклер вью
+        adapter.updateAdapter(list) //обновляем адаптер
     }
 
 }

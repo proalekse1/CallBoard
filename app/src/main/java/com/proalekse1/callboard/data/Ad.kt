@@ -7,6 +7,7 @@ data class Ad( //дата класс для хранения заполненн�
     val index: String? = null,
     val withSent: String? = null,
     val category: String? = null,
+    val title: String? = null,
     val price: String? = null,
     val description: String? = null,
     val key: String? = null //уникальный ключ каждогообъявления

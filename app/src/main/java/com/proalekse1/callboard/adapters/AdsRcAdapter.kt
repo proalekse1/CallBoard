@@ -10,7 +10,7 @@ class AdsRcAdapter : RecyclerView.Adapter<AdsRcAdapter.AdHolder>() { //реса�
     val adArray = ArrayList<Ad>() //массив для хранения объявлений
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdHolder { //создать
-        val binding = AdListItemBinding.inflate(LayoutInflater.from(parent.context)) //надули байндинг
+        val binding = AdListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false) //надули байндинг
         return AdHolder(binding)
     }
 
@@ -34,7 +34,7 @@ class AdsRcAdapter : RecyclerView.Adapter<AdsRcAdapter.AdHolder>() { //реса�
             binding.apply{
                 tvDescription.text = ad.description
                 tvPrice.text = ad.price
-
+                tvTitle.text = ad.title
             }
         }
 

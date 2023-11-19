@@ -29,7 +29,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
     lateinit var rootElement:ActivityEditAdsBinding //для байндинга
     private val dialog = DialogSpinnerHelper() //инициализируем диалог
     lateinit var imageAdapter : ImageAdapter //подключаем адаптер
-    private val dbManager = DbManager() //инициализируем дата менеджер
+    private val dbManager = DbManager(null) //инициализируем дата менеджер
     var editImagePos = 0 //позиция картинки в массиве
 
 
@@ -126,6 +126,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
                 edIndex.text.toString(),
                 checkBoxWithSend.isChecked.toString(),
                 tvCat.text.toString(),
+                edTitle.text.toString(),
                 edPrice.text.toString(),
                 edDescription.text.toString(),
                 dbManager.db.push().key //получаем уникальный ключ из fire base

@@ -9,7 +9,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.proalekse1.callboard.data.Ad
 
-class DbManager { //для управления базой данных из Ad.kt
+class DbManager(val readDataCallback: ReadDataCallback?) { //для управления базой данных из Ad.kt
 
     val db = Firebase.database.getReference("main") //подключили fire base к переменной
     val auth = Firebase.auth
@@ -28,6 +28,7 @@ class DbManager { //для управления базой данных из Ad.
                     val ad = item.children.iterator().next().child("ad").getValue(Ad::class.java) //полный путь до узла ad записанный в переменную
                     if (ad != null) adArray.add(ad) //помещаем в список данные из объявления
                 }
+                readDataCallback?.readData(adArray)
             }
 
             override fun onCancelled(error: DatabaseError) {}
