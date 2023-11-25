@@ -27,4 +27,9 @@
     <style name="ActionBarCustom">
         <item name="android:textColorSecondary">@color/green_main</item>
     </style>
+    <!-- Для трех полосок в тулбаре -->
+    <style name="ToolbarMainStyle" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlNormal">@color/green_main</item>
+        <item name="fontFamily">sans-serif-condensed</item>
+    </style>
 </resources>

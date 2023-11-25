@@ -16,9 +16,10 @@
         <entry key="..\:/1/CallBoard/app/src/main/res/drawable/ic_eye.xml" value="0.1135" />
         <entry key="..\:/1/CallBoard/app/src/main/res/drawable/ic_fav_normal.xml" value="0.1135" />
         <entry key="..\:/1/CallBoard/app/src/main/res/drawable/ic_fav_pressed.xml" value="0.1135" />
+        <entry key="..\:/1/CallBoard/app/src/main/res/drawable/ic_new_ads.xml" value="0.1135" />
         <entry key="..\:/1/CallBoard/app/src/main/res/layout/activity_edit_ads.xml" value="0.2" />
         <entry key="..\:/1/CallBoard/app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="..\:/1/CallBoard/app/src/main/res/layout/ad_list_item.xml" value="0.25" />
+        <entry key="..\:/1/CallBoard/app/src/main/res/layout/ad_list_item.xml" value="0.33" />
         <entry key="..\:/1/CallBoard/app/src/main/res/layout/image_adapter_item.xml" value="0.20416666666666666" />
         <entry key="..\:/1/CallBoard/app/src/main/res/layout/list_image_frag.xml" value="0.33" />
         <entry key="..\:/1/CallBoard/app/src/main/res/layout/main_content.xml" value="0.25" />
