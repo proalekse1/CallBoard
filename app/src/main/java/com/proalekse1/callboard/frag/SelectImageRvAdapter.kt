@@ -46,9 +46,8 @@ class SelectImageRvAdapter(val adapterCallback: AdapterCallBack) : RecyclerView.
     class ImageHolder(private val viewBinding: SelectImageFragItemBinding, val context: Context, val adapter: SelectImageRvAdapter) : RecyclerView.ViewHolder(viewBinding.root) { //холдер заполняет
 
         fun setData(bitMap : Bitmap){
-
             viewBinding.imEditImage.setOnClickListener { //слушатель нажатий на кнопку редактирования
-                ImagePicker.getImages(context as EditAdsAct, 1, ImagePicker.REQUES_CODE_GET_SINGL_IMAGE)
+                ImagePicker.launcher(context as EditAdsAct, context.launcherSingleSelectImage, 1)
                 context.editImagePos = adapterPosition //получаем позицию картинки
             }
 

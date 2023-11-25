@@ -8,11 +8,11 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.proalekse1.callboard.R
+import com.proalekse1.callboard.act.EditAdsAct
 import com.proalekse1.callboard.databinding.ListImageFragBinding
 import com.proalekse1.callboard.dialoghelper.ProgressDialog
 import com.proalekse1.callboard.utils.AdapterCallBack
@@ -113,11 +113,7 @@ class ImageListFrag(private val fragCloseInterface : FragmentCloseInterface, pri
             addImageItem?.setOnMenuItemClickListener { //слушатель для добавить
                 val imageCount =
                     ImagePicker.MAX_IMAGE_COUNT - adapter.mainArray.size // находим сколько картинок показано
-                ImagePicker.getImages(
-                    activity as AppCompatActivity,
-                    imageCount,
-                    ImagePicker.REQUES_CODE_GET_IMAGES
-                )
+                ImagePicker.launcher(activity as EditAdsAct, (activity as EditAdsAct).launcherMultiSelectImage, imageCount)
                 //Log.d("MyLog","Add item") //проверка
                 true
             }

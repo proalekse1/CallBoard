@@ -5,11 +5,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
-import com.fxn.pix.Pix
 import com.fxn.utility.PermUtil
 import com.proalekse1.callboard.R
 import com.proalekse1.callboard.adapters.ImageAdapter
@@ -20,7 +19,6 @@ import com.proalekse1.callboard.dialogs.DialogSpinnerHelper
 import com.proalekse1.callboard.frag.FragmentCloseInterface
 import com.proalekse1.callboard.frag.ImageListFrag
 import com.proalekse1.callboard.utils.CityHelper
-import com.proalekse1.callboard.utils.ImageManager
 import com.proalekse1.callboard.utils.ImagePicker
 
 
@@ -31,6 +29,9 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
     lateinit var imageAdapter : ImageAdapter //подключаем адаптер
     private val dbManager = DbManager(null) //инициализируем дата менеджер
     var editImagePos = 0 //позиция картинки в массиве
+    var launcherMultiSelectImage: ActivityResultLauncher<Intent>? = null //лаунчер для выбора картинок
+    var launcherSingleSelectImage: ActivityResultLauncher<Intent>? = null //лаунчер для выбора одной картинки
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,11 +41,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
         init()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) { //получаем результат когда добавляем фото на объявление
-        super.onActivityResult(requestCode, resultCode, data)
-        ImagePicker.showSelectedImages(resultCode, requestCode, data, this) //функция выбора картинки
 
-    }
 
     override fun onRequestPermissionsResult( //функцию запроса на доступ к фото на телефоне и к камере
         requestCode: Int,
@@ -54,7 +51,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
         when (requestCode) {
             PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) { //если разрешение получено
-                    ImagePicker.getImages(this, 3, ImagePicker.REQUES_CODE_GET_IMAGES) //получаем фото
+                    //ImagePicker.getImages(this, 3, ImagePicker.REQUEST_CODE_GET_IMAGES) //получаем фото
                 } else {
 
                         Toast.makeText(
@@ -66,11 +63,14 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
                 return
             }
         }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults) //новый супер колл 43 урок
     }
 
     private fun init(){
         imageAdapter = ImageAdapter() //инициализирууем адаптер
         rootElement.vpImages.adapter = imageAdapter //находим вью пейджер и подключаем адаптер
+        launcherMultiSelectImage = ImagePicker.getLauncherForMultiSelectImages(this) //лаунчер для выбора картинок
+        launcherSingleSelectImage = ImagePicker.getLauncherForSingleImage(this) //лаунчер для выбора 1 картинки
     }
 
     //OnClicks
@@ -102,7 +102,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
     fun onClickGetImages(view: View){ //слушатель нажатий для кнопки добавить картинку
 
         if (imageAdapter.mainArray.size == 0){ //если нет фото открываем фотоаппарат
-            ImagePicker.getImages(this, 3, ImagePicker.REQUES_CODE_GET_IMAGES) //получаем фото
+            ImagePicker.launcher(this, launcherMultiSelectImage, 3) //получаем фото
         } else { //если уже выбирали фото открываем фрагмент для редактирования фото
 
             openChooseImageFrag(null)
