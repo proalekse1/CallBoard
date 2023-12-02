@@ -129,7 +129,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
                 edTitle.text.toString(),
                 edPrice.text.toString(),
                 edDescription.text.toString(),
-                dbManager.db.push().key //получаем уникальный ключ из fire base
+                dbManager.db.push().key, dbManager.auth.uid //получаем уникальный ключ из fire base
             )
         }
         return ad //возвращает заполненное объявление

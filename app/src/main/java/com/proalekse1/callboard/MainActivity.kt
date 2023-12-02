@@ -17,6 +17,8 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.proalekse1.callboard.act.EditAdsAct
 import com.proalekse1.callboard.adapters.AdsRcAdapter
 import com.proalekse1.callboard.data.Ad
@@ -33,9 +35,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var tvAccount: TextView //для доступа к хидеру
     private lateinit var rootElement:ActivityMainBinding //подключаем байндинг
     private var dialogHelper = DialogHelper(this)
-    val mAuth = FirebaseAuth.getInstance() //инициализировали Firebase
+    val mAuth = Firebase.auth //инициализировали Firebase
     val dbManager = DbManager(this) //создаем переменную для DbManager
-    val adapter = AdsRcAdapter() //создали адаптер
+    val adapter = AdsRcAdapter(mAuth) //создали адаптер
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

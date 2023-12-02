@@ -1,17 +1,20 @@
 package com.proalekse1.callboard.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
 import com.proalekse1.callboard.data.Ad
 import com.proalekse1.callboard.databinding.AdListItemBinding
 
-class AdsRcAdapter : RecyclerView.Adapter<AdsRcAdapter.AdHolder>() { //ресайклер вью адаптер для показа объявлений
+class AdsRcAdapter(val auth: FirebaseAuth) : RecyclerView.Adapter<AdsRcAdapter.AdHolder>() { //ресайклер вью адаптер для показа объявлений
     val adArray = ArrayList<Ad>() //массив для хранения объявлений
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdHolder { //создать
         val binding = AdListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false) //надули байндинг
-        return AdHolder(binding)
+        return AdHolder(binding, auth)
     }
 
     override fun onBindViewHolder(holder: AdHolder, position: Int) { //связать view по позициям с нулевой
@@ -28,7 +31,7 @@ class AdsRcAdapter : RecyclerView.Adapter<AdsRcAdapter.AdHolder>() { //реса�
         notifyDataSetChanged()
     }
 
-    class AdHolder(val binding: AdListItemBinding) : RecyclerView.ViewHolder(binding.root) { //холдер будет удерживать в памяти созданные вью
+    class AdHolder(val binding: AdListItemBinding, val auth: FirebaseAuth) : RecyclerView.ViewHolder(binding.root) { //холдер будет удерживать в памяти созданные вью
 
         fun setData(ad: Ad){ //функция которая будт заполнять из дата класса объявления
             binding.apply{
@@ -36,9 +39,21 @@ class AdsRcAdapter : RecyclerView.Adapter<AdsRcAdapter.AdHolder>() { //реса�
                 tvPrice.text = ad.price
                 tvTitle.text = ad.title
             }
+            showEditPanel(isOwner(ad))
+        }
+
+        private fun isOwner(ad: Ad): Boolean{ //функция проверки uid чтобы понимать объявление собственника или нет
+            return ad.uid == auth.uid //ad.uid-идентификатор объяления при создании; auth.uid-идентификатор пользователя
+        }
+
+        private fun showEditPanel(isOwner: Boolean){ //показываем или прячем панель редактироания объявления
+            if(isOwner){
+                binding.editPanel.visibility = View.VISIBLE // видима
+            } else {
+                binding.editPanel.visibility = View.GONE // невидима
+            }
         }
 
     }
-
 
 }
