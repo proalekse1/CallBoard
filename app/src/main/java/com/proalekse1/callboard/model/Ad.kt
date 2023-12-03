@@ -1,4 +1,4 @@
-package com.proalekse1.callboard.data
+package com.proalekse1.callboard.model
 
 data class Ad( //дата класс для хранения заполненных строк объявления
     val country: String? = null,

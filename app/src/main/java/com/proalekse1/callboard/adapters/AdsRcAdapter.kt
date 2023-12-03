@@ -5,8 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.ktx.Firebase
-import com.proalekse1.callboard.data.Ad
+import com.proalekse1.callboard.model.Ad
 import com.proalekse1.callboard.databinding.AdListItemBinding
 
 class AdsRcAdapter(val auth: FirebaseAuth) : RecyclerView.Adapter<AdsRcAdapter.AdHolder>() { //ресайклер вью адаптер для показа объявлений

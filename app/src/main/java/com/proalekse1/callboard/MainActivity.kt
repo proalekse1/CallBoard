@@ -9,35 +9,33 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.proalekse1.callboard.act.EditAdsAct
 import com.proalekse1.callboard.adapters.AdsRcAdapter
-import com.proalekse1.callboard.data.Ad
-import com.proalekse1.callboard.database.DbManager
-import com.proalekse1.callboard.database.ReadDataCallback
 import com.proalekse1.callboard.databinding.ActivityMainBinding
 import com.proalekse1.callboard.dialoghelper.DialogConst
 
 
 import com.proalekse1.callboard.dialoghelper.GoogleAccConst
+import com.proalekse1.callboard.viewmodel.FirebaseViewModel
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, ReadDataCallback {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
     private lateinit var tvAccount: TextView //для доступа к хидеру
     private lateinit var rootElement:ActivityMainBinding //подключаем байндинг
     private var dialogHelper = DialogHelper(this)
     val mAuth = Firebase.auth //инициализировали Firebase
-    val dbManager = DbManager(this) //создаем переменную для DbManager
     val adapter = AdsRcAdapter(mAuth) //создали адаптер
+    private val firebaseViewModel: FirebaseViewModel by viewModels() //инициализируем вью модел
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +44,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(view) //подключаем байндинг
         init()
         initRecyclerView() // запускаем ресайклер вью
-        dbManager.readDataFromDb() //запуск чтения с базы данных
+        initViewModel() //запускаем ViewModel
+        firebaseViewModel.loadAllAds() //передали список с объявлениями
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean { //слушатель кнопки new
@@ -84,6 +83,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onStart() {
         super.onStart()
         uiUpdate(mAuth.currentUser)
+    }
+
+    private fun initViewModel(){ //запускаем ViewModel и подписываемся на объяввления
+        firebaseViewModel.liveAdsData.observe(this,{
+            adapter.updateAdapter(it)
+        })
     }
 
     private fun init(){
@@ -147,9 +152,4 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             user.email
         }
     }
-
-    override fun readData(list: List<Ad>) { //интерфейс для получения данных из базы данных для показа в ресайклер вью
-        adapter.updateAdapter(list) //обновляем адаптер
-    }
-
 }

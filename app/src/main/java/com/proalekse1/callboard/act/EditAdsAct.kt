@@ -12,8 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.fxn.utility.PermUtil
 import com.proalekse1.callboard.R
 import com.proalekse1.callboard.adapters.ImageAdapter
-import com.proalekse1.callboard.data.Ad
-import com.proalekse1.callboard.database.DbManager
+import com.proalekse1.callboard.model.Ad
+import com.proalekse1.callboard.model.DbManager
 import com.proalekse1.callboard.databinding.ActivityEditAdsBinding
 import com.proalekse1.callboard.dialogs.DialogSpinnerHelper
 import com.proalekse1.callboard.frag.FragmentCloseInterface
@@ -27,7 +27,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
     lateinit var rootElement:ActivityEditAdsBinding //для байндинга
     private val dialog = DialogSpinnerHelper() //инициализируем диалог
     lateinit var imageAdapter : ImageAdapter //подключаем адаптер
-    private val dbManager = DbManager(null) //инициализируем дата менеджер
+    private val dbManager = DbManager() //инициализируем дата менеджер
     var editImagePos = 0 //позиция картинки в массиве
     var launcherMultiSelectImage: ActivityResultLauncher<Intent>? = null //лаунчер для выбора картинок
     var launcherSingleSelectImage: ActivityResultLauncher<Intent>? = null //лаунчер для выбора одной картинки
