@@ -46,19 +46,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         initRecyclerView() // запускаем ресайклер вью
         initViewModel() //запускаем ViewModel
         firebaseViewModel.loadAllAds() //передали список с объявлениями
+        bottomMenuOnClick() //нижнее меню с слушателями
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean { //слушатель кнопки new
-        if(item.itemId == R.id.id_new_ads){ //если нажали на new
-            val i = Intent(this, EditAdsAct::class.java) //запускаем активити
-            startActivity(i)
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return super.onCreateOptionsMenu(menu)
+    override fun onResume() {
+        super.onResume()
+        rootElement.mainContent.bNavView.selectedItemId = R.id.id_home //при возврате на активити будет выбрана кнопка home
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) { //для входа в гугл аккаунт
@@ -98,6 +91,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
         rootElement.navView.setNavigationItemSelectedListener (this) //подключаем к навигатион вью слушатель нажатий
         tvAccount = rootElement.navView.getHeaderView(0).findViewById(R.id.tvAccountEmail) //получаем доступ к хидеру
+    }
+
+    private fun bottomMenuOnClick() = with(rootElement){ //слушатель нижнего меню
+
+        mainContent.bNavView.setOnNavigationItemSelectedListener { item ->
+            when(item.itemId){ //выбор по какой кнопке нижнего меню нажали
+                R.id.id_new_ad -> { //кнопка нью
+                    val i = Intent(this@MainActivity, EditAdsAct::class.java) //запускаем активити
+                    startActivity(i)
+                }
+                R.id.id_my_ads -> {
+                    Toast.makeText(this@MainActivity, "MyAds", Toast.LENGTH_LONG).show()}
+                R.id.id_favs -> {
+                    Toast.makeText(this@MainActivity, "Favs", Toast.LENGTH_LONG).show()}
+                R.id.id_home -> {
+                    Toast.makeText(this@MainActivity, "Home", Toast.LENGTH_LONG).show()}
+            }
+            true
+        }
     }
 
     private fun initRecyclerView(){ //инициализируем ресайклер вью
