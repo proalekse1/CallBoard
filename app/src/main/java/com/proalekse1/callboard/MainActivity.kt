@@ -102,11 +102,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     startActivity(i)
                 }
                 R.id.id_my_ads -> {
-                    Toast.makeText(this@MainActivity, "MyAds", Toast.LENGTH_LONG).show()}
+                    firebaseViewModel.loadMyAds() //показываем мои объявления
+                    mainContent.toolbar.title = getString(R.string.ad_my_ads) //показываем в тулбаре мои объявления
+                }
                 R.id.id_favs -> {
                     Toast.makeText(this@MainActivity, "Favs", Toast.LENGTH_LONG).show()}
                 R.id.id_home -> {
-                    Toast.makeText(this@MainActivity, "Home", Toast.LENGTH_LONG).show()}
+                    firebaseViewModel.loadAllAds() //показываем все объявления
+                mainContent.toolbar.title = getString(R.string.def) //показываем в тулбаре мои объявления
+                }
             }
             true
         }
