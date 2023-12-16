@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var rootElement:ActivityMainBinding //подключаем байндинг
     private var dialogHelper = DialogHelper(this)
     val mAuth = Firebase.auth //инициализировали Firebase
-    val adapter = AdsRcAdapter(mAuth) //создали адаптер
+    val adapter = AdsRcAdapter(this) //создали адаптер
     private val firebaseViewModel: FirebaseViewModel by viewModels() //инициализируем вью модел
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -167,5 +167,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             user.email
         }
+    }
+
+    companion object{ //константы для put extra на AdsRcAdapter
+
+        const val EDIT_STATE = "edit_state"
+        const val ADS_DATA = "ads_data"
+
     }
 }

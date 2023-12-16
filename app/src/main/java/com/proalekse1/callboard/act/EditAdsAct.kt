@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import com.fxn.utility.PermUtil
+import com.proalekse1.callboard.MainActivity
 import com.proalekse1.callboard.R
 import com.proalekse1.callboard.adapters.ImageAdapter
 import com.proalekse1.callboard.model.Ad
@@ -39,9 +40,33 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
         rootElement = ActivityEditAdsBinding.inflate(layoutInflater) //для байндинга
         setContentView(rootElement.root) //для байндинга
         init()
+        checkEditState()
+    }
+
+    private fun checkEditState(){ //функция проверки редактируем старое или делаем новое объявление
+
+        if(isEditState()){
+            fillViews(intent.getSerializableExtra(MainActivity.ADS_DATA) as Ad) //as Ad - делаем каст из байт в дата класс
+        }
+
     }
 
 
+    private fun isEditState(): Boolean{ //для проверки открыли объявление для редактирования или новое
+        return intent.getBooleanExtra(MainActivity.EDIT_STATE, false)
+    }
+
+    private fun fillViews(ad: Ad) = with(rootElement){//запись данных из дата класса в поля
+        tvCountry.text = ad.country //страна
+        tvCity.text = ad.city //город
+        editTel.setText(ad.tel) //пишем так потому что там editText
+        edIndex.setText(ad.index)
+        checkBoxWithSend.isChecked = ad.withSent.toBoolean()
+        tvCat.text = ad.category
+        edTitle.setText(ad.title)
+        edPrice.setText(ad.price)
+        edDescription.setText(ad.description)
+    }
 
     override fun onRequestPermissionsResult( //функцию запроса на доступ к фото на телефоне и к камере
         requestCode: Int,

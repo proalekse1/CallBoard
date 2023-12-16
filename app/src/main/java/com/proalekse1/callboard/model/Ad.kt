@@ -1,5 +1,7 @@
 package com.proalekse1.callboard.model
 
+import java.io.Serializable
+
 data class Ad( //дата класс для хранения заполненных строк объявления
     val country: String? = null,
     val city: String? = null,
@@ -12,4 +14,4 @@ data class Ad( //дата класс для хранения заполненн�
     val description: String? = null,
     val key: String? = null, //уникальный ключ каждого объявления
     val uid: String? = null //идентификатор пользователя
-)
+): Serializable
