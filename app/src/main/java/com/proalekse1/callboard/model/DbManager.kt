@@ -14,9 +14,13 @@ class DbManager { //для управления базой данных из Ad.
     val db = Firebase.database.getReference("main") //подключили fire base к переменной для считывания с главного пути
     val auth = Firebase.auth
 
-    fun publishAd(ad: Ad){ //функция будет записывать в базу данных данные
+    fun publishAd(ad: Ad, finishListener: FinishWorkListener){ //функция будет записывать в базу данных данные
 
-       if (auth.uid != null)db.child(ad.key ?: "empty").child(auth.uid!!).child("ad").setValue(ad) //если UID не null то запишем в базу данных объявление
+       if (auth.uid != null)db.child(ad.key ?: "empty").child(auth.uid!!).child("ad") //если UID не null то запишем в базу данных объявление
+           .setValue(ad).addOnCompleteListener {
+               if(it.isSuccessful)
+               finishListener.onFinish()
+           }
     }
 
     fun getMyAds(readDataCallback: ReadDataCallback){ //функция фильтрации по уид
@@ -47,5 +51,9 @@ class DbManager { //для управления базой данных из Ad.
 
     interface ReadDataCallback { //интерфейс для передачи данных полученных из базы данных в ресайклер вью
         fun readData(list: ArrayList<Ad>)
+    }
+
+    interface FinishWorkListener{ //интерфейс для прослушиания успешной передачи данных в базу данных
+        fun onFinish()
     }
 }

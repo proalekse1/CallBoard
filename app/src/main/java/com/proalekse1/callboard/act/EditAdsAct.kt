@@ -29,9 +29,11 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
     private val dialog = DialogSpinnerHelper() //инициализируем диалог
     lateinit var imageAdapter : ImageAdapter //подключаем адаптер
     private val dbManager = DbManager() //инициализируем дата менеджер
-    var editImagePos = 0 //позиция картинки в массиве
     var launcherMultiSelectImage: ActivityResultLauncher<Intent>? = null //лаунчер для выбора картинок
     var launcherSingleSelectImage: ActivityResultLauncher<Intent>? = null //лаунчер для выбора одной картинки
+    var editImagePos = 0 //позиция картинки в массиве
+    private var isEditState = false //состояние объявления ноое или старое
+    private var ad: Ad? = null //переменная для дата класса
 
 
 
@@ -44,9 +46,10 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
     }
 
     private fun checkEditState(){ //функция проверки редактируем старое или делаем новое объявление
-
-        if(isEditState()){
-            fillViews(intent.getSerializableExtra(MainActivity.ADS_DATA) as Ad) //as Ad - делаем каст из байт в дата класс
+        isEditState = isEditState()
+        if(isEditState){
+            ad = intent.getSerializableExtra(MainActivity.ADS_DATA) as Ad
+            if(ad != null)fillViews(ad!!) //as Ad - делаем каст из байт в дата класс
         }
 
     }
@@ -56,7 +59,7 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
         return intent.getBooleanExtra(MainActivity.EDIT_STATE, false)
     }
 
-    private fun fillViews(ad: Ad) = with(rootElement){//запись данных из дата класса в поля
+    private fun fillViews(ad: Ad) = with(rootElement){//запись данных из дата класса в поля объявления
         tvCountry.text = ad.country //страна
         tvCity.text = ad.city //город
         editTel.setText(ad.tel) //пишем так потому что там editText
@@ -137,9 +140,20 @@ class EditAdsAct : AppCompatActivity(), FragmentCloseInterface { //активи�
     }
 
     fun onClickPublish(view: View){ //слушатель для кнопки опубликовать
+        val adTemp = fillAd()
+        if(isEditState){ //если редактироание
+            dbManager.publishAd(adTemp.copy(key = ad?.key), onPublishFinish()) //запустили функцию заполнения дата класса
+        } else { //если новое объявление
+            dbManager.publishAd(adTemp, onPublishFinish())
+        }
+    }
 
-        dbManager.publishAd(fillAd()) //запустили функцию заполнения дата класса
-
+    private fun onPublishFinish(): DbManager.FinishWorkListener{ //интерфейс для закрытия этого активити после публикации
+        return object: DbManager.FinishWorkListener{
+            override fun onFinish() {
+                finish()
+            }
+        }
     }
 
     private fun fillAd(): Ad{ //функция заполнения дата класса
