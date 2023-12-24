@@ -24,4 +24,14 @@ class FirebaseViewModel: ViewModel() { //посредник между базо�
             }
         })
     }
+
+    fun deleteItem(ad: Ad){ //посредник для удаления объявлений
+        dbManager.deleteAd(ad, object: DbManager.FinishWorkListener{
+            override fun onFinish() {
+                val updatedList = liveAdsData.value
+                updatedList?.remove(ad)
+                liveAdsData.postValue(updatedList)
+            }
+        })
+    }
 }

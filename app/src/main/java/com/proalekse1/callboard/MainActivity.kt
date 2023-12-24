@@ -26,10 +26,11 @@ import com.proalekse1.callboard.dialoghelper.DialogConst
 
 
 import com.proalekse1.callboard.dialoghelper.GoogleAccConst
+import com.proalekse1.callboard.model.Ad
 import com.proalekse1.callboard.viewmodel.FirebaseViewModel
 
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, AdsRcAdapter.DeleteItemListener{
     private lateinit var tvAccount: TextView //для доступа к хидеру
     private lateinit var rootElement:ActivityMainBinding //подключаем байндинг
     private var dialogHelper = DialogHelper(this)
@@ -174,5 +175,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         const val EDIT_STATE = "edit_state"
         const val ADS_DATA = "ads_data"
 
+    }
+
+    override fun onDeleteItem(ad: Ad) { //удаление объявления
+        firebaseViewModel.deleteItem(ad)
     }
 }

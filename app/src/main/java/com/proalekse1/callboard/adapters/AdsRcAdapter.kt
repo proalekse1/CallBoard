@@ -4,6 +4,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.proalekse1.callboard.MainActivity
@@ -28,9 +29,12 @@ class AdsRcAdapter(val act: MainActivity) : RecyclerView.Adapter<AdsRcAdapter.Ad
     }
 
     fun updateAdapter(newList: List<Ad>){ //обновляем адаптер
+        val diffResult = DiffUtil.calculateDiff(DiffUtilHelper(adArray, newList)) //обновляем адаптер после удаления с анимацией
+        diffResult.dispatchUpdatesTo(this) //this это адаптер
         adArray.clear() //очищаем
         adArray.addAll(newList) //добавляем новые элементы
-        notifyDataSetChanged()
+
+        //notifyDataSetChanged() //после 51 урока не нужно
     }
 
     class AdHolder(val binding: AdListItemBinding, val act: MainActivity) : RecyclerView.ViewHolder(binding.root) { //холдер будет удерживать в памяти созданные вью
@@ -42,6 +46,9 @@ class AdsRcAdapter(val act: MainActivity) : RecyclerView.Adapter<AdsRcAdapter.Ad
                 tvTitle.text = ad.title
                 showEditPanel(isOwner(ad))
                 ibEditAd.setOnClickListener(onClickEdit(ad)) //карандаш
+                ibDeleteAd.setOnClickListener{ //кнопка удалить
+                    act.onDeleteItem(ad)
+                }
             }
 
         private fun onClickEdit(ad: Ad): View.OnClickListener{ //слушатель на карандашик
@@ -68,6 +75,10 @@ class AdsRcAdapter(val act: MainActivity) : RecyclerView.Adapter<AdsRcAdapter.Ad
             }
         }
 
+    }
+
+    interface DeleteItemListener{ //интерфейс для удаления объявления
+        fun onDeleteItem(ad: Ad)
     }
 
 }

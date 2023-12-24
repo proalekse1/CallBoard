@@ -31,7 +31,13 @@ class DbManager { //для управления базой данных из Ad.
     fun getAllAds(readDataCallback: ReadDataCallback){ //запрос всех объявлений
         val query = db.orderByChild(auth.uid + "/ad/price") //
         readDataFromDb(query, readDataCallback)
+    }
 
+    fun deleteAd(ad: Ad, listener: FinishWorkListener){ //для удаления объявлений из базы данных
+        if(ad.key == null || ad.uid == null) return
+        db.child(ad.key).child(ad.uid).removeValue().addOnCompleteListener {
+            if(it.isSuccessful) listener.onFinish()
+        }
     }
 
    private fun readDataFromDb(query: Query, readDataCallback: ReadDataCallback?){ //функция считыания данных
